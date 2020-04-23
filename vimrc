@@ -1,6 +1,6 @@
 syntax on
-colorscheme PaperColor
-"set background=dark
+colorscheme OceanicNext
+set background=dark
 
 set number
 
@@ -36,7 +36,7 @@ let g:NERDSpaceDelims = 1
 
 
 vnoremap J :m '>+1<CR>gv=gv
-vnoremap k :m '<-2<cr>gv=gv
+vnoremap K :m '<-2<cr>gv=gv
 
 
 "theme-related items
@@ -180,6 +180,13 @@ vnoremap k :m '<-2<cr>gv=gv
 "Allow ctrl-d, ctrl-u to go down/up page in Insert mode
 :imap <C-d> <C-O><C-d>
 :imap <C-u> <C-O><C-u>
+" -- J (why does this need to be recursive?)
+
+" -- search (command-F sent as <leader>F)
+:nmap <leader>F /
+:imap <leader>F <C-O>/
+:vmap <leader>F /
+
 
 "Set up the shell and allow toggling of the Karabiner CAPS key
 "Should put this python script in the vim folder
