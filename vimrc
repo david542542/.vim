@@ -1,10 +1,13 @@
+"Stylistic
 syntax on
-colorscheme OceanicNext
+colorscheme TextMate
 set background=dark
-
 set number
 
-" Don't bother with .swp files and the like
+"Mouse
+set mouse=a
+
+"Don't bother with .swp files and the like
 set nobackup
 set nowritebackup
 set noswapfile
@@ -25,27 +28,45 @@ set splitbelow
 set splitright
 set ve+=onemore "allows us to go one-past the last character, emulating ctrl-e in normal programs
 set belloff=all
-            
+set showcmd
+
+"Load plugins
 call plug#begin('~/.vim/plugged')
 Plug 'preservim/nerdcommenter'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 call plug#end()
 
+" Couple file things
 filetype plugin on
+filetype on " detect type of file
+let g:airline_theme='angr'
+
 let g:NERDSpaceDelims = 1
-" let g:netrw_browse_split = 4
+set textwidth=0 "disable auto-wrap
 
+"backspace will delete a char when in normal mode (the character to the left of the cursor)
+:nnoremap <Backspace> hx
 
+"Move selected blocks easily when in visual mode
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<cr>gv=gv
 
+"Indent and dedent, especially in visual mode
+nnoremap <leader>( >>
+nnoremap <leader>* <<
+inoremap <leader>( <C-O>>>
+inoremap <leader>* <C-O><<
+vnoremap <leader>( >gv
+vnoremap <leader>* <gv
 
-"theme-related items
 
+"When in normal mode, treat an enter like insert
+:nmap <leader>&  O
+:nmap <CR> i<CR>
 
-" :vnoremap J j
-" :vnoremap K k
+":vnoremap K k
 :imap <leader>c<space> <Esc><Leader>c<space>i
-:nnoremap <CR> i<CR>
 :imap <Esc> <Esc>`^
 :inoremap ˙ <C-O>b
 :nnoremap ˙ b
@@ -134,21 +155,22 @@ vnoremap K :m '<-2<cr>gv=gv
 "Command-Shift-T: open new window (on the right by default)
 "Done in iTerm2
 
-" "Ctrl-jk to move up/down by half a page (will do hl as well to just move to the start/end of the line)
+
+" "Ctrl-jk to move up/down by a block -- '{' and '}' (will do hl as well to just move to the start/end of the line)
 " -- h
 :nmap <leader>B 0
 :imap <leader>B <C-O>0
 :vmap <leader>B 0
 
-" -- J (why does this need to be recursive?)
-:nmap <leader>N <C-d>
-:imap <leader>N <C-d>
-:vmap <leader>N <C-d>
+" -- J 
+:nmap <leader>N }
+:imap <leader>N <C-O>}
+:vmap <leader>N }
 
 " -- K
-:nmap <leader>M <C-u>
-:imap <leader>M <C-u>
-:vmap <leader>M <C-u>
+:nmap <leader>M {
+:imap <leader>M <C-O>{
+:vmap <leader>M {
 
 " -- L
 :nmap <leader>. $l
@@ -162,14 +184,14 @@ vnoremap K :m '<-2<cr>gv=gv
 :vmap <leader>AB 0
 
 " -- J (why does this need to be recursive?)
-:nmap <leader>BB v<C-d>
-:imap <leader>BB <C-O>v <C-d>
-:vmap <leader>BB <C-d>
+:nmap <leader>BB v}
+:imap <leader>BB <C-O>v}
+:vmap <leader>BB }
 
 " -- K
-:nmap <leader>CB v<C-u>
-:imap <leader>CB <C-O>v <C-u>
-:vmap <leader>CB <C-u>
+:nmap <leader>CB v{
+:imap <leader>CB <C-O>v{
+:vmap <leader>CB {
 
 " -- L
 :nmap <leader>DB v$l
@@ -182,22 +204,37 @@ vnoremap K :m '<-2<cr>gv=gv
 :imap <C-u> <C-O><C-u>
 " -- J (why does this need to be recursive?)
 
-" -- search (command-F sent as <leader>F)
-:nmap <leader>F /
-:imap <leader>F <C-O>/
-:vmap <leader>F /
+" -- search (command-F sent as <leader>F), shift-command-f to get search history
+:nmap <leader>f /
+:imap <leader>f <C-O>/
+:vmap <leader>f /
+:nmap <leader>F q/
+:imap <leader>F <C-O>q<C-O>/
+:vmap <leader>F q/
 
 
 "Set up the shell and allow toggling of the Karabiner CAPS key
 "Should put this python script in the vim folder
 set shell=bash\ -l
-set timeoutlen=10 ttimeoutlen=0
+set timeoutlen=10 ttimeoutlen=1
 
 "To encourage not using the arrow keys
 nnoremap <Down> <Nop>
 nnoremap <Left> <Nop>
 nnoremap <Right> <Nop>
-nnoremap <Up> <Nop>
+
+"For the up-arrow we'll allow getting the last command (do the same for command-e)
+nnoremap <Up> :<Up>
+nnoremap <leader>- :
+"And for command-shift-e we'll show the previous command history
+nnoremap <leader>+ q:
+inoremap <leader>+ <C-O>q <C-O>:
+vnoremap <leader>+ q:
+
+
+inoremap <leader>- <C-O>:
+vnoremap<leader>- :
+
 inoremap <Down> <Nop>
 inoremap <Left> <Nop>
 inoremap <Right> <Nop>
