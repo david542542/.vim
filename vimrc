@@ -35,11 +35,15 @@ call plug#begin('~/.vim/plugged')
 Plug 'preservim/nerdcommenter'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 call plug#end()
 
 let g:fzf_layout = { 'down': '~30%' }
+"By default, don't show hidden files
+let g:netrw_list_hide='\(^\|\s\s\)\zs\.\S\+'
+noremap <silent> <Leader><Leader> :Files <C-R>=expand('%:h')<CR><CR>
+noremap <silent> <Leader>] :Vex<CR>
 
 " Couple file things
 filetype plugin on
@@ -109,7 +113,6 @@ vnoremap <leader>* <gv
 :nnoremap <C-e> $l
 :vnoremap <C-a> 0
 :vnoremap <C-e> $l
-
 
 
 "Command-hjkl to to start/end of line/file
@@ -220,7 +223,7 @@ vnoremap <leader>* <gv
 "Set up the shell and allow toggling of the Karabiner CAPS key
 "Should put this python script in the vim folder
 set shell=bash\ -l
-set timeoutlen=10 ttimeoutlen=1
+set timeoutlen=400 ttimeoutlen=10
 
 "To encourage not using the arrow keys
 nnoremap <Down> <Nop>
@@ -243,3 +246,4 @@ inoremap <Down> <Nop>
 inoremap <Left> <Nop>
 inoremap <Right> <Nop>
 inoremap <Up> <Nop>
+
