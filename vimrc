@@ -35,7 +35,11 @@ call plug#begin('~/.vim/plugged')
 Plug 'preservim/nerdcommenter'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 call plug#end()
+
+let g:fzf_layout = { 'down': '~30%' }
 
 " Couple file things
 filetype plugin on
@@ -158,9 +162,9 @@ vnoremap <leader>* <gv
 
 " "Ctrl-jk to move up/down by a block -- '{' and '}' (will do hl as well to just move to the start/end of the line)
 " -- h
-:nmap <leader>B 0
-:imap <leader>B <C-O>0
-:vmap <leader>B 0
+:nmap <leader>B b
+:imap <leader>B <C-O>b
+:vmap <leader>B b
 
 " -- J 
 :nmap <leader>N }
@@ -173,15 +177,15 @@ vnoremap <leader>* <gv
 :vmap <leader>M {
 
 " -- L
-:nmap <leader>. $l
-:imap <leader>. <C-O>$
-:vmap <leader>. $
+:nmap <leader>. el
+:imap <leader>. <C-O>e
+:vmap <leader>. e
 
 "Shift-Ctrl-jk to move up/down by half a page and highlight 
 " -- H
-:nmap <leader>AB v0
-:imap <leader>AB <C-O>v <C-O>0
-:vmap <leader>AB 0
+:nmap <leader>AB vb
+:imap <leader>AB <C-O>v <C-O>b
+:vmap <leader>AB b
 
 " -- J (why does this need to be recursive?)
 :nmap <leader>BB v}
@@ -194,9 +198,9 @@ vnoremap <leader>* <gv
 :vmap <leader>CB {
 
 " -- L
-:nmap <leader>DB v$l
-:imap <leader>DB <C-O>v<C-O>$
-:vmap <leader>DB $
+:nmap <leader>DB vel
+:imap <leader>DB <C-O>v<C-O>e
+:vmap <leader>DB e
 
 
 "Allow ctrl-d, ctrl-u to go down/up page in Insert mode
