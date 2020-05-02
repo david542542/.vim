@@ -24,6 +24,8 @@ set shiftwidth=4
 
 "Miscellaneous items
 set backspace=indent,eol,start
+"Allow backspace to act like it does in insert mode)
+nnoremap <expr> <Backspace> col('.') == 1 ? 'kgJ' : 'X'
 set splitbelow
 set splitright
 set ve+=onemore "allows us to go one-past the last character, emulating ctrl-e in normal programs
@@ -37,7 +39,9 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'alvan/vim-closetag'
 call plug#end()
+
 
 let g:fzf_layout = { 'down': '~30%' }
 "By default, don't show hidden files
@@ -54,7 +58,7 @@ let g:NERDSpaceDelims = 1
 set textwidth=0 "disable auto-wrap
 
 "backspace will delete a char when in normal mode (the character to the left of the cursor)
-:nnoremap <Backspace> hx
+cnoremap <c-a> <Home>
 
 "Move selected blocks easily when in visual mode
 vnoremap J :m '>+1<CR>gv=gv
@@ -242,8 +246,6 @@ vnoremap <leader>+ q:
 inoremap <leader>- <C-O>:
 vnoremap<leader>- :
 
-inoremap <Down> <Nop>
-inoremap <Left> <Nop>
-inoremap <Right> <Nop>
-inoremap <Up> <Nop>
+
+
 
