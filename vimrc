@@ -76,14 +76,14 @@ vnoremap <leader>* <gv
 "
 :imap <leader>c<space> <Esc><Leader>c<space>i
 :imap <Esc> <Esc>`^
-:inoremap ˙ <C-O>b
-:nnoremap ˙ b
-:inoremap ¬ <C-O>e<C-O>l
-:nnoremap ¬ el
-:inoremap ˚ <C-O>k<C-O>
-:nnoremap ˚ k
-:inoremap ∆ <C-O>j<C-O>
-:nnoremap ∆ j
+" :inoremap ˙ <C-O>b
+" :nnoremap ˙ b
+" :inoremap ¬ <C-O>e<C-O>l
+" :nnoremap ¬ el
+" :inoremap ˚ <C-O>k<C-O>
+" :nnoremap ˚ k
+" :inoremap ∆ <C-O>j<C-O>
+" :nnoremap ∆ j
 
 "Simulate ctrl-a, ctrl-e to go to start/end of line
 :inoremap <C-a> <Esc>0i
@@ -109,9 +109,9 @@ vnoremap <leader>* <gv
 :vmap <C-j> }
 
 " -- K (currently not working??)
-nmap <C-k> {
-imap <C-k> <C-o>k
-vmap <C-k> {
+:nnoremap <C-k> {
+:inoremap <C-k> <C-o>k
+:vnoremap <C-k> {
 
 " -- L
 :nmap <C-l> el
