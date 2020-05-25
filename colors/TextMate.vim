@@ -12,10 +12,11 @@ let g:colors_name = "TextMate"
 
 hi Cursor ctermfg=15 ctermbg=0 cterm=NONE guifg=#ffffff guibg=#000000 gui=NONE
 hi Visual ctermfg=NONE ctermbg=189 cterm=NONE guifg=NONE guibg=#c6deff gui=NONE
-hi CursorLine ctermfg=NONE ctermbg=254 cterm=NONE guifg=NONE guibg=#e6e6e6 gui=NONE
-hi CursorColumn ctermfg=NONE ctermbg=254 cterm=NONE guifg=NONE guibg=#e6e6e6 gui=NONE
+hi CursorLine ctermfg=NONE cterm=NONE guibg=#e8f3fd
+hi CursorColumn ctermfg=NONE ctermbg=NONE cterm=bold guifg=NONE guibg=#E8F3FD
 hi ColorColumn ctermfg=NONE ctermbg=254 cterm=NONE guifg=NONE guibg=#e6e6e6 gui=NONE
 hi LineNr ctermfg=244 ctermbg=254 cterm=NONE guifg=#808080 guibg=#e6e6e6 gui=NONE
+hi CursorLineNR guifg=#FFFFFF
 
 hi VertSplit ctermfg=249 ctermbg=249 cterm=NONE guifg=#b5b5b5 guibg=#b5b5b5 gui=NONE
 hi MatchParen ctermfg=21 ctermbg=NONE cterm=underline guifg=#0000ff guibg=NONE gui=underline
@@ -27,11 +28,10 @@ hi IncSearch ctermfg=15 ctermbg=22 cterm=NONE guifg=#ffffff guibg=#036a07 gui=NO
 hi Search ctermfg=NONE ctermbg=NONE cterm=underline guifg=NONE guibg=NONE gui=underline
 hi Directory ctermfg=160 ctermbg=NONE cterm=bold guifg=#c5060b guibg=NONE gui=bold
 hi Folded ctermfg=27 ctermbg=15 cterm=NONE guifg=#0066ff guibg=#ffffff gui=NONE
-
 hi Normal ctermfg=0 ctermbg=15 cterm=NONE guifg=#000000 guibg=#ffffff gui=NONE
-hi Boolean ctermfg=63 ctermbg=NONE cterm=bold guifg=#cccccc guibg=NONE gui=bold
+hi Boolean ctermfg=63 ctermbg=NONE cterm=bold guifg=#2e49de guibg=NONE gui=bold
 hi Character ctermfg=160 ctermbg=NONE cterm=bold guifg=#cccccc guibg=NONE gui=bold
-hi Comment ctermfg=27 ctermbg=NONE cterm=NONE guifg=#cccccc guibg=NONE gui=italic
+hi Comment ctermfg=27 ctermbg=NONE cterm=NONE guifg=#2661f6
 hi Conditional ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
 hi Constant ctermfg=160 ctermbg=NONE cterm=bold guifg=#c5060b guibg=NONE gui=bold
 hi Define ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
@@ -41,13 +41,13 @@ hi DiffChange ctermfg=0 ctermbg=152 cterm=NONE guifg=#000000 guibg=#b9cfe7 gui=N
 hi DiffText ctermfg=0 ctermbg=74 cterm=bold guifg=#000000 guibg=#729fcf gui=bold
 hi ErrorMsg ctermfg=15 ctermbg=88 cterm=NONE guifg=#ffffff guibg=#990000 gui=NONE
 hi WarningMsg ctermfg=15 ctermbg=88 cterm=NONE guifg=#ffffff guibg=#990000 gui=NONE
-hi Float ctermfg=20 ctermbg=NONE cterm=NONE guifg=#0000cd guibg=NONE gui=NONE
+hi Float ctermfg=20 ctermbg=NONE cterm=bold guifg=#0000cd guibg=NONE gui=NONE 
 hi Function ctermfg=19 ctermbg=NONE cterm=bold guifg=#0000a2 guibg=NONE gui=bold
 hi Identifier ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
 hi Keyword ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
 hi Label ctermfg=22 ctermbg=NONE cterm=NONE guifg=#036a07 guibg=NONE gui=NONE
 hi NonText ctermfg=250 ctermbg=231 cterm=NONE guifg=#bfbfbf guibg=#f2f2f2 gui=NONE
-hi Number ctermfg=20 ctermbg=NONE cterm=NONE guifg=#0000cd guibg=NONE gui=NONE
+hi Number ctermfg=20 ctermbg=NONE cterm=bold guifg=#0000cd guibg=NONE gui=NONE
 hi Operator ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
 hi PreProc ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
 hi Special ctermfg=0 ctermbg=NONE cterm=NONE guifg=#000000 guibg=NONE gui=NONE
@@ -106,3 +106,5 @@ hi cssClassName ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=N
 hi cssValueLength ctermfg=20 ctermbg=NONE cterm=NONE guifg=#0000cd guibg=NONE gui=NONE
 hi cssCommonAttr ctermfg=28 ctermbg=NONE cterm=bold guifg=#06960e guibg=NONE gui=bold
 hi cssBraces ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi NonText guibg=#FFFFFF
+
