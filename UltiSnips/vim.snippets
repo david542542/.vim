@@ -1,0 +1,4 @@
+snippet log
+call LogOutput("${1: }","${2:DEBUG}", {'line': expand('<sflnum>'), 'func': expand('<sfile>')[9:]})
+$0
+endsnippet
