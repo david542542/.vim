@@ -182,8 +182,8 @@ for folder in ALL_FOLDERS
         call add(VALID_FOLDERS, folder)
     endif
 endfor
-let $FZF_DEFAULT_COMMAND = printf("find %s ! -path '*site-packages/*' ! -path '*.git/*' ! -name '*.pyc' 
-                                \ -maxdepth 4 -type f -printf '%%A+\t%%p\n' | sort -r | awk '{print $2}'", ' '.join(VALID_FOLDERS))
+let $FZF_DEFAULT_COMMAND = printf("find %s ! -path '*site-packages/*' ! -path '*.git/*' ! -name '*.pyc'
+                                \ -maxdepth 4 -type f -exec ls -t {} +", ' '.join(VALID_FOLDERS))
 unlet home | unlet ALL_FOLDERS | unlet VALID_FOLDERS
 
 " How much space FZF will take, this sets it to take up the bottom 1/3
@@ -263,6 +263,7 @@ inoremap 0<c-d> 0<c-d>
 inoremap <C-k> <C-o>"_D
 
 " }}}
+
 
 " TO FINISH {{{1
 
