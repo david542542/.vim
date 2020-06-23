@@ -156,10 +156,12 @@ call plug#begin('~/.vim/plugged')
     
     " UtiliSnips to add code-snippets: https://github.com/SirVer/ultisnips
     " For whatever reason, not working/compiling with python version 3.4
-    pyx python_version=sys.version[:3]; vim.command('let python_version="%s"' % python_version)
-    if python_version == '3.7'
-        Plug 'SirVer/ultisnips'
-        Plug 'honza/vim-snippets'
+    if has('python3')
+        pyx vim.command('let python_version="%s"' % sys.version[:3])
+        if python_version == '3.7'
+            Plug 'SirVer/ultisnips'
+            Plug 'honza/vim-snippets'
+        endif
     endif
 
 call plug#end()
