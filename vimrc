@@ -155,8 +155,13 @@ call plug#begin('~/.vim/plugged')
     Plug 'majutsushi/tagbar'
     
     " UtiliSnips to add code-snippets: https://github.com/SirVer/ultisnips
-    Plug 'SirVer/ultisnips'
-    Plug 'honza/vim-snippets'
+    " For whatever reason, not working/compiling with python version 3.4
+    pyx python_version=sys.version[:3]; vim.command('let python_version="%s"' % python_version)
+    if python_version == '3.7'
+        Plug 'SirVer/ultisnips'
+        Plug 'honza/vim-snippets'
+    endif
+
 call plug#end()
 "}}}
 " Plugin-Settings {{{1
