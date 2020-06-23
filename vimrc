@@ -1,3 +1,4 @@
+
 " Folding {{{1
 
 " For the vim/vimrc filetype, allow manual folding via {{{ ... }}}
@@ -177,6 +178,7 @@ nmap s <Plug>(easymotion-overwin-f2)
 let home = isdirectory(expand('~/Desktop')) ? '~/Desktop' : '/home/ubuntu'
 let ALL_FOLDERS     =   [home . '/Ingest', home . '/Avails', home . '/Eidr', '~/.vim', home]
 let VALID_FOLDERS   =   []
+
 for folder in ALL_FOLDERS
     if isdirectory(expand(folder)) 
         call add(VALID_FOLDERS, folder)
