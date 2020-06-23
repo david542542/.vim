@@ -90,8 +90,7 @@ set belloff=all
 " Note the viminfo file is saved when you quit Vim and read when you re-open it
 " '100  --> Save markers from the last 100 files
 " f1    --> Save file marks (such as A-Z, that can be accessed across files)
-set viminfo='100,f1
-
+set viminfo='100,f1,n~/.vim/viminfo
 " Will show what has been typed in before a command has finished, for example, 4d
 set showcmd
 
@@ -265,7 +264,6 @@ inoremap 0<c-d> 0<c-d>
 inoremap <C-k> <C-o>"_D
 
 " }}}
-
 
 " TO FINISH {{{1
 
