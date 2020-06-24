@@ -1,4 +1,3 @@
-
 " Folding {{{1
 
 " For the vim/vimrc filetype, allow manual folding via {{{ ... }}}
@@ -6,6 +5,14 @@ augroup filetype_vim
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker
 augroup END
+
+" Save and restore manual folds when we exit a file
+augroup SaveManualFolds
+    au!
+    au BufWinLeave * mkview
+    au BufWinEnter * silent loadview
+augroup END
+
 
 " Style {{{1
 
@@ -81,6 +88,8 @@ set shiftround
 " Text will be wrapped after this number of columns, can be annoying when writing long comments
 set textwidth=120
 
+" For very long lines such as a static mapping), do not wrap those lines:
+set nowrap
 " Miscellaneous {{{1
 
 " The audio bell becomes quite annoying on save and such
@@ -132,6 +141,7 @@ call plug#begin('~/.vim/plugged')
     " Vim-airline: status-bar for vim: https://github.com/vim-airline/vim-airline
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
+    Plug 'tpope/vim-fugitive'
 
     " Fuzzy-File Finder, cmd-G to easily open recent files: https://github.com/junegunn/fzf.vim
     Plug 'junegunn/fzf'
@@ -450,4 +460,4 @@ inoremap <C-k> <C-o>"_D
 " }}}
 
 
-
+ 
