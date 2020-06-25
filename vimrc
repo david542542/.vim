@@ -19,8 +19,13 @@ set numberwidth=4
 
 " To allow setting of highlight-guifg and highlight-guibg for custom styling (of python)
 " If setting this option does not work (produces a colorless UI) reading *xterm-true-color* might help.
+" note: without the &t_8f and &t_8b, tmux produces an all-black output
 set termguicolors
-
+if exists('+termguicolors')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    set termguicolors
+endif
 " Folding {{{1
 
 " For the vim/vimrc filetype, allow manual folding via {{{ ... }}}
@@ -32,9 +37,10 @@ augroup END
 " Save and restore manual folds when we exit a file
 augroup SaveManualFolds
     autocmd!
-    au BufWinLeave, BufLeave ?* silent! mkview
-    au BufWinEnter           ?* silent! loadview
+    au BufWrite,VimLeave,BufLeave,BufWinLeave       ?*  mkview
+    au BufWinEnter,BufRead                          ?*  loadview
 augroup END
+
 
 
 " Abbreviations/Snippets {{{1
