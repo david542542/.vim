@@ -1,18 +1,3 @@
-" Folding {{{1
-
-" For the vim/vimrc filetype, allow manual folding via {{{ ... }}}
-augroup filetype_vim
-    autocmd!
-    autocmd FileType vim setlocal foldmethod=marker
-augroup END
-
-" Save and restore manual folds when we exit a file
-augroup SaveManualFolds
-    au!
-    au BufWinLeave * mkview
-    au BufWinEnter * silent loadview
-augroup END
-
 
 " Style {{{1
 
@@ -35,6 +20,22 @@ set numberwidth=4
 " To allow setting of highlight-guifg and highlight-guibg for custom styling (of python)
 " If setting this option does not work (produces a colorless UI) reading *xterm-true-color* might help.
 set termguicolors
+
+" Folding {{{1
+
+" For the vim/vimrc filetype, allow manual folding via {{{ ... }}}
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+
+" Save and restore manual folds when we exit a file
+augroup SaveManualFolds
+    autocmd!
+    au BufWinLeave, BufLeave ?* silent! mkview
+    au BufWinEnter           ?* silent! loadview
+augroup END
+
 
 " Abbreviations/Snippets {{{1
 
