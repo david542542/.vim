@@ -19,8 +19,13 @@ set numberwidth=4
 
 " To allow setting of highlight-guifg and highlight-guibg for custom styling (of python)
 " If setting this option does not work (produces a colorless UI) reading *xterm-true-color* might help.
+" note: without the &t_8f and &t_8b, tmux produces an all-black output
 set termguicolors
-
+if exists('+termguicolors')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    set termguicolors
+endif
 " Folding {{{1
 
 " For the vim/vimrc filetype, allow manual folding via {{{ ... }}}
@@ -30,20 +35,22 @@ augroup filetype_vim
 augroup END
 
 " Save and restore manual folds when we exit a file
+" note: this will also save mappings and abbreviations and such, be careful!
 augroup SaveManualFolds
     autocmd!
-    au BufWinLeave, BufLeave ?* silent! mkview
-    au BufWinEnter           ?* silent! loadview
+    au BufWrite,VimLeave,BufLeave,BufWinLeave       ?*  mkview
+    au BufWinEnter,BufRead                          ?*  loadview
 augroup END
 
+" Consistency for Manual folds (previously was different on Mac vs Linux)
+" Default is '+-- XX lines: WORD '
+function ManualFoldText()
+    let line = trim(getline(v:foldstart))
+    let line = split(line, '{{')[0]->trim(' "')
+    return printf('+--%3s lines: %s ', v:foldend - v:foldstart, line)
+endfunction
+set foldtext=ManualFoldText()
 
-" Abbreviations/Snippets {{{1
-
-" These are handled by UltiSnips, but included here for reference.
-" [python]
-"    - py --> expands to #!/usr/bin...# coding: utf-8
-" [vim]
-"   - log --> expands to call LogOutput(...)
 
 " Search {{{1
 
@@ -59,14 +66,14 @@ set smartcase
 
 " Highlight search matches, using an `if` so it doesn't keep getting re-set if we re-source vimrc
 " See: https://vi.stackexchange.com/a/8742/28904 for details
-if !&hlsearch | set hlsearch | endif
-
 " Press esc twice to quickly turn off the highlighting search results
-nnoremap <esc><esc> :noh<return>
+" Highlighted search disabled for now, getting too annoying
+" if !&hlsearch | set hlsearch | endif
+" nnoremap <esc><esc> :noh<return>
 
 " Backups {{{1
 
-" Never write backup or tmp files. 
+" Never write backup or tmp files.
 set nowritebackup
 set noswapfile
 
@@ -110,7 +117,7 @@ set splitright
 
 " Allow the cursor to move one-past the last character,
 " Similar to any other text-editor and helpful for ctrl-e. See `:h onemore`
-set ve+=onemore 
+set ve+=onemore
 
 " Vim will try and detect the type of file being edited, which will trigger the FileType event,
 " which can be used to set syntax highlighting, file-specific, options, etc. :h filetype
@@ -121,9 +128,9 @@ filetype plugin on
 " Very useful for resizing split windows and such. :h mouse
 set mouse=nvi
 
-" The time that is waited for a mapped code to wait for the next keystroke, 
+" The time that is waited for a mapped code to wait for the next keystroke,
 " for example if ii is mapped, if `i` is pressed, wait 80ms before going into `insert` mode if `i` is not pressed again.
-set timeoutlen=200 ttimeoutlen=20
+set timeoutlen=40 ttimeoutlen=20
 
 " Do not auto-wrap comments and don't insert comments when pressing o/O. See: :h *fo-table* and :h *'formatoptions'*
 set formatoptions-=cro
@@ -140,7 +147,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'easymotion/vim-easymotion'
 
     " Vim-airline: status-bar for vim: https://github.com/vim-airline/vim-airline
-    Plug 'vim-airline/vim-airline'
+        Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'tpope/vim-fugitive'
 
@@ -164,17 +171,16 @@ call plug#begin('~/.vim/plugged')
     " TagBar -- show ctags (functions and classes) on the right: https://github.com/majutsushi/tagbar
     " note: we may want to delete this plugin, as not sure how useful it really is in everyday usage
     Plug 'majutsushi/tagbar'
-    
+
     " UtiliSnips to add code-snippets: https://github.com/SirVer/ultisnips
     " For whatever reason, not working/compiling with python version 3.4
-    if has('python3')
-        pyx vim.command('let python_version="%s"' % sys.version[:3])
-        if python_version == '3.7'
-            Plug 'SirVer/ultisnips'
-            Plug 'honza/vim-snippets'
-        endif
+    if has('python3') && (py3eval('sys.version_info')[2] >= 7)
+        Plug 'SirVer/ultisnips'
+        Plug 'honza/vim-snippets'
+        let snips_installed = 1
+    else
+        let snips_installed = 0
     endif
-
 call plug#end()
 "}}}
 " Plugin-Settings {{{1
@@ -190,7 +196,7 @@ let ALL_FOLDERS     =   [home . '/Ingest', home . '/Avails', home . '/Eidr', '~/
 let VALID_FOLDERS   =   []
 
 for folder in ALL_FOLDERS
-    if isdirectory(expand(folder)) 
+    if isdirectory(expand(folder))
         call add(VALID_FOLDERS, folder)
     endif
 endfor
@@ -215,21 +221,40 @@ let g:airline_theme='term_light'
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
 
-" Enable NERDCommenterToggle to check all selected lines is commented or not 
+" Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
 
 
 "}}}
+" Abbreviations/Snippets {{{1
+
+" These are handled by UltiSnips, but included here for reference.
+" [python]
+"    - py --> expands to #!/usr/bin...# coding: utf-8
+" [vim]
+"   - log --> expands to call LogOutput(...)
+
+" Consume character after abbreviation typed in can be done with *getchar*
+" View the section on *abbreviations* (five have-pages down is 'func Eatchar()')
+" A negative index always results in an empty string (for backward compatibility), see :h *expr-[]*
+if !snips_installed
+    augroup VimLogger
+        autocmd!
+        autocmd Filetype vim iabbrev <buffer> log call LogOutput(*, "DEBUG", {'line': expand('<sflnum>'), 'func': expand('<sfile>')[9:]})
+                                                       \ <C-c>F*cl<C-R>=getchar(0)[-1]<CR>
+    augroup END
+endif
+
 " Mappings {{{1
 
 " Cmd-G to open FuzzyFilesFinder
-noremap  <leader>g :Files<CR>
-noremap! <leader>g <C-C>:Files<CR>
+noremap  <leader>G :Files<CR>
+noremap! <leader>G <C-C>:Files<CR>
 
 
-" Cmd-K to open URL in default browser 
+" Cmd-K to open URL in default browser
 " Note that <C-R> allows us to add in things like <C-F> (filepath), <C-W> (word), <C-A> (WORD). See :h c_CTRL-R
-nnoremap <leader>k :execute 'silent !open' fnameescape(expand('<cfile>')) \| redraw!<CR>
+nnoremap <leader>K :execute 'silent !open' fnameescape(expand('<cfile>')) \| redraw!<CR>
 
 
 " Cmd-[,] to Ident/Dedent -- change the level of indent so consistent in each mode
@@ -240,16 +265,20 @@ nnoremap <leader>[   i<C-D><Esc>`[
 vnoremap <leader>]   >gv
 vnoremap <leader>[   <gv
 
+
 " Cmd-/ to comment/uncomment with NERDCommenter
 " todo: (line_has_comment) ? '<leader>csgv' : '<leader>cugv'
 nmap  <leader>/ <Plug>NERDCommenterToggle
 vmap  <leader>/ <Plug>NERDCommenterToggle gv
-imap <leader>/ <C-O><Plug>NERDCommenterToggle
+imap  <leader>/ <C-O><Plug>NERDCommenterToggle
+
 
 " "-->`   Map linewise-mark ' to instead characterwise-mark `
 nnoremap ' `
 
+
 " Ctrl-a, e to go to start/end of line
+" note: we can use *i_CTRL-@* to copy-in last insert text
 inoremap <C-a> <C-O>0
 noremap  <C-a> 0
 cnoremap <C-a> <Home>
@@ -258,12 +287,13 @@ noremap  <C-e> $l
 
 
 " Ctrl-s to go to first letter on the line
-inoremap <leader>s <C-O>^
-noremap  <leader>s ^
+inoremap <C-s> <C-O>^
+noremap  <C-s> ^
 
 
 " [Enter] -- When in normal mode, treat an Enter/Return like insert
 nnoremap <CR> i<CR>
+
 
 " Ctrl-d to forward-delete when in insert or command mode
 " note: we're also 're-mapping' the 0<C-d> to remove all indent in line
@@ -271,18 +301,99 @@ nnoremap <CR> i<CR>
 noremap! <C-d> <Delete>
 inoremap 0<c-d> 0<c-d>
 
+
 " Ctrl-k to delete all text to right of cursor (dont care about digraphs)
 inoremap <C-k> <C-o>"_D
 
-" }}}
 
+" K to Allow reading help keywords between *some_word*, for example, *c_CTRL-R*
+nnoremap <expr> K   count(expand('<cWORD>'), '*') == 2 ?
+                    \ printf(':h %s<CR>', matchstr(expand('<cWORD>'), '\*\zs[^*]\+\ze\*'))
+                    \ : 'K'
+
+
+" Y so that it works like the C and D equivalents to yank text to the end of the line. See :h Y
+" Note that we do allow this one (unlike all the others) to be recursive)
+nnoremap Y y$`[
+
+
+" When pressing escape don't creep backwards -- because <Esc> on lhs, need to re-map arrows-prefix
+inoremap <Esc>  <Esc>`^
+inoremap <Esc>0 <Esc>0
+
+
+" Cmd-F to enter into an empty search
+" Cmd-Shift-F to enter into search with most recent search
+noremap  <leader>F  <C-c>/
+noremap! <leader>F  <C-c>/
+noremap  <leader>FF <C-c>/<C-p>
+noremap! <leader>FF <C-c>/<C-p>
+
+
+" Cmd-E to enter into command mode
+" Cmd-Shift-E to enter into command mode with most recent command
+noremap  <leader>E  <C-c>:
+noremap! <leader>E  <C-c>:
+noremap  <leader>EE <C-c>:<C-p>
+noremap! <leader>EE <C-c>:<C-p>
+
+
+" Cmd-A to select all, sending A instead of a from iTerm (sending some odd escape)
+noremap  <leader>A <esc>ggVG
+inoremap <leader>A <esc>ggVG
+
+
+" h,j,k,l to move in insert and command mode (ignore jk for command-line since one-line)
+noremap! <C-h> <Left>
+noremap! <C-l> <Right>
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+
+
+" Option-h,l to go forward/back a word (also allow it in normal mode -- override the H, L)
+" Option-right,left also mapped to same thing, to go forward/back a word in command-mode
+noremap! <leader>H <S-Left>
+noremap  <leader>H <S-Left>
+noremap! <leader>L <S-Right>
+noremap  <leader>L <S-Right>
+
+
+" Cmd-R to execute a command in command-line mode
+cnoremap <leader>R <CR>
+
+
+" Option-space as &nbsp; in html
+augroup HTML
+    autocmd!
+    autocmd FileType html,htmldjango inoremap <buffer> <leader><space> &nbsp;
+augroup END
+
+
+" Cmd-. to autocomplete tags, especially HTML, see *i_CTRL-X_CTRL-O*
+function Autocomplete()
+    " See :h *complete-functions* for how to use the omni-complete
+    " note: the following function is geared towards HTML
+    let idx = htmlcomplete#CompleteTags(1, '')
+    let completion = htmlcomplete#CompleteTags(0, idx)[0]
+    if completion != '>'
+        execute ('normal!i' . completion)
+    else
+        normal! XX
+    endif
+endfunction
+inoremap <leader>.  </<C-O>:call Autocomplete()<CR><Right>
+nnoremap <leader>. i</<C-O>:call Autocomplete()<CR><Esc><Right><Right>
+
+
+" }}}
 " TO FINISH {{{1
 
-"  "Tagbar
-"  nnoremap <leader>m :TagbarToggle<CR>
-"  inoremap <leader>m <C-o>:TagbarToggle<CR>
-"  vnoremap <leader>m <Esc>:TagbarToggle<CR>gv
-"
+
+" "Tagbar
+ " nnoremap <leader>m :TagbarToggle<CR>
+ " inoremap <leader>m <C-o>:TagbarToggle<CR>
+ " vnoremap <leader>m <Esc>:TagbarToggle<CR>gv
+
 " "Nerdtree
 " "Go up a folder -- u or U (to keep old folder still open)
 " "Open/close a folder -- o or O (to open all), Xo (to close all recursively if opened)
@@ -290,33 +401,22 @@ inoremap <C-k> <C-o>"_D
 " nnoremap <leader>M :NERDTreeToggle<CR>
 " inoremap <leader>M <Esc>:NERDTreeToggle<CR>
 " vnoremap <leader>M <Esc>:NERDTreeToggle<CR>
-"
+
 " nnoremap <leader>o :NERDTreeFind<CR>C<CR>
 " inoremap <leader>o <Esc>:NERDTreeFind<CR>C<CR>
 " vnoremap <leader>o <Esc>:NERDTreeFind<CR>C<CR>
-"
-"
-"
-" " nnoremap <expr> <Backspace> col('.') == 1 ? 'kgJ' : ''
-" " Allow reading help keywords between *some_word*, for example, *c_CTRL-R*
-" function MyFunc2() abort
-"     let word = trim(expand("<cWORD>"))
-"     if count(word, '*') == 2
-"         let split_word = word->split('*')
-"         let word = len(split_word) == 2 ? split_word[1] : split_word[0]
-"         call execute(printf(':h *%s*', word))
-"     else
-"         normal! K
-"     endif
-" endfunction
-" nnoremap K :call MyFunc2()<CR>
-"
 
-" Map Y so that it works like the C and D equivalents to yank text to the end of the line. See :h Y
-" map Y y$
+" "When in insert mode allow ctrl-w w to go to other window
+" inoremap <C-w> <C-o><C-w>
 
-" Make it easier to delete from cursor position to the first character, the inverse of C
-" TODO -- figure out the correct mapping -- nnoremap B d^i
+" " Paste -- sort of a workaround to iTerm2's crappy/slow paste
+" nnoremap <leader>p "*p
+" inoremap <leader>p <C-o>"*p
+
+" autocmd BufNewFile,BufRead *.txt set filetype=markdown
+" autocmd BufNewFile,BufRead *.txt colorscheme OceanicNext
+" autocmd BufNewFile,BufRead ?^[^.]\+$ colorscheme OceanicNext
+
 
 
 " function IsNumber(str)
@@ -342,7 +442,7 @@ inoremap <C-k> <C-o>"_D
         " normal! "*p
         " '[,']sort
 
-		" " If just one term, convert it to a tuple
+        " " If just one term, convert it to a tuple
         " if num_terms == 1
 
 
@@ -372,93 +472,34 @@ inoremap <C-k> <C-o>"_D
         " endif
 
     " else
-        " call LogOutput("Only one or two terms currently supported.", "INFO", {'line': expand('<sflnum>'), 'func': expand('<sfile>')[9:]})
+        " call LogOutput("Only one or two terms currently supported.", "INFO", {'line': expand('<sflnum>'), 'func': expand('<sfile
         " return
     " endif
-" endfunc 
+" endfunc
 " nnoremap <silent> # :call FormatInput()<CR>
 
 
-
-
-" "When in insert mode allow ctrl-w w to go to other window
-" inoremap <C-w> <C-o><C-w>
-
-" " ctrl-h,j,k,l to go up/down by a block
-" inoremap <C-h> <C-O>h
-" cnoremap <C-h> <Left>
-
-" nnoremap <C-j> }
-" inoremap <C-j>  <C-O>j
-
-" nnoremap <C-k> {
-" inoremap <C-k> <C-O>k
-
-" inoremap <C-l> <C-O>l
-" cnoremap <C-l> <Right>
-
-" "Allow ctrl-d to delete the forward character when in insert/command mode
-" inoremap <C-d> <Del>
-" cnoremap <C-d> <Del>
-
-" " in command mode, have option-arrow keys act like in Terminal
-" cnoremap <leader>5 <S-Left>
-" cnoremap <leader>6 <S-Right>
-
-
-" " -- search (command-F sent as <leader>F)
-" nnoremap <leader>f /
-" inoremap <leader>f <C-O>/
- " When pressing escape don't creep backwards
-" inoremap <Esc> <Esc>`^
-
-
-
-
-
-
-
-
-
 " " Toggle the line number for  copy/paste: https://stackoverflow.com/a/61952187/651174
-" " Vimscript file settings ---- 
+" " Vimscript file settings ----
 " function! MagicNumberToggle() abort
     " if &nu + &rnu == 0
-		" set nopaste
+        " set nopaste
         " let &nu = g:old_nu
         " let &rnu = g:old_rnu
-		" exe "normal! l\<esc>"
+        " exe "normal! l\<esc>"
     " else
-		" set paste
+        " set paste
         " let g:old_nu = &nu
         " let g:old_rnu = &rnu
         " let &nu = 0
         " let &rnu =0
-		" exe "normal! h"
+        " exe "normal! h"
     " endif
 " endfunction
 " nnoremap <leader>Z :call MagicNumberToggle()<cr>
-" " 
-" " Cmd-C (from iTerm2) will act as a yank when in visual mode (and go to end of previous visual selection)
-" vnoremap <leader>5 "*y`]
-
-" " Paste -- sort of a workaround to iTerm2's crappy/slow paste
-" nnoremap <leader>p "*p
-" inoremap <leader>p <C-o>"*p
-
-" " HTML option-space add non-breaking space character
-" " Note: to avoid conflicts should probably do as suggested here:
-" " # https://vi.stackexchange.com/a/25815/28904
-" " To reload an FileType autocommand need to (1) re-source; and (2) re-set ft=...
-" autocmd FileType html,htmldjango inoremap <buffer> <leader>1 &nbsp;
-" " autocmd FileType python set syn=OFF
-" " autocmd BufNewFile,BufRead *.txt set filetype=markdown
-" " autocmd BufNewFile,BufRead *.txt colorscheme OceanicNext
-" " autocmd BufNewFile,BufRead ?^[^.]\+$ colorscheme OceanicNext
+" "
 
 
 " nnoremap <leader>sv :source $MYVIMRC \| edit!<cr>
 " }}}
 
-
- 
