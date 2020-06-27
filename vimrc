@@ -36,11 +36,11 @@ augroup END
 
 " Save and restore manual folds when we exit a file
 " note: this will also save mappings and abbreviations and such, be careful!
-augroup SaveManualFolds
-    autocmd!
-    au BufWrite,VimLeave,BufLeave,BufWinLeave       ?*  mkview
-    au BufWinEnter,BufRead                          ?*  loadview
-augroup END
+" augroup SaveManualFolds
+    " autocmd!
+    " au BufWrite,VimLeave,BufLeave,BufWinLeave       ?*  mkview
+    " au BufWinEnter,BufRead                          ?*  loadview
+" augroup END
 
 " Consistency for Manual folds (previously was different on Mac vs Linux)
 " Default is '+-- XX lines: WORD '
