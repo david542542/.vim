@@ -130,7 +130,7 @@ set mouse=nvi
 
 " The time that is waited for a mapped code to wait for the next keystroke,
 " for example if ii is mapped, if `i` is pressed, wait 80ms before going into `insert` mode if `i` is not pressed again.
-set timeoutlen=40 ttimeoutlen=20
+set timeoutlen=60 ttimeoutlen=20
 
 " Do not auto-wrap comments and don't insert comments when pressing o/O. See: :h *fo-table* and :h *'formatoptions'*
 set formatoptions-=cro
@@ -262,7 +262,7 @@ noremap! <leader>G <C-C>:Files<CR>
 
 " Cmd-K to open URL in default browser
 " Note that <C-R> allows us to add in things like <C-F> (filepath), <C-W> (word), <C-A> (WORD). See :h c_CTRL-R
-nnoremap <leader>K :execute 'silent !open' fnameescape(expand('<cfile>')) \| redraw!<CR>
+nnoremap <leader>O :execute 'silent !open' fnameescape(expand('<cfile>')) \| redraw!<CR>
 
 
 " Cmd-[,] to Ident/Dedent -- change the level of indent so consistent in each mode
@@ -335,16 +335,16 @@ inoremap <Esc>0 <Esc>0
 " Cmd-Shift-F to enter into search with most recent search
 noremap  <leader>F  <C-c>/
 noremap! <leader>F  <C-c>/
-noremap  <leader>FF <C-c>/<C-p>
-noremap! <leader>FF <C-c>/<C-p>
+noremap  <leader>FF <C-c>/<C-r>/
+noremap! <leader>FF <C-c>/<C-r>/
 
 
 " Cmd-E to enter into command mode
 " Cmd-Shift-E to enter into command mode with most recent command
 noremap  <leader>E  <C-c>:
 noremap! <leader>E  <C-c>:
-noremap  <leader>EE <C-c>:<C-p>
-noremap! <leader>EE <C-c>:<C-p>
+noremap  <leader>EE <C-c>:<C-r>:
+noremap! <leader>EE <C-c>:<C-r>
 
 
 " Cmd-A to select all, sending A instead of a from iTerm (sending some odd escape)
@@ -376,17 +376,26 @@ cnoremap <leader>L <S-Right>
 inoremap <leader>L <C-o>e<Right>
 
 
-" Cmd-R to execute a command in command-line mode
+" Cmd-R or Cmd-Space to execute a command in command-line mode
 cnoremap <leader>R <CR>
 
 
 " Cmd-Opt-n to change the colorscheme
-noremap  <expr> <leader>N (g:colors_name ==? 'textmate') ? ':colorscheme OceanicNext<CR>' : ':colorscheme TextMate<CR>'
-noremap! <expr> <leader>N <C-o>(g:colors_name ==? 'textmate') ? ':colorscheme OceanicNext<CR>' : ':colorscheme TextMate<CR>'
+noremap  <expr> <leader>NN (g:colors_name ==? 'textmate') ? ':colorscheme OceanicNext<CR>' : ':colorscheme TextMate<CR>'
+noremap! <expr> <leader>NN <C-o>(g:colors_name ==? 'textmate') ? ':colorscheme OceanicNext<CR>' : ':colorscheme TextMate<CR>'
 
+
+" Cmd-Opt-Ctrl-n to toggle the relative line numbers
+noremap  <leader>N :set rnu!<CR>
+noremap! <leader>N <C-c>:set rnu!<CR>
+
+
+" Y,y in visual-line mode should also make the cursor jump to the bottom of selection
+vnoremap <expr> Y (mode() ==# 'V') ? "Y']" : "Y"
+vnoremap <expr> y (mode() ==# 'V') ? "Y']" : "Y"
 
 " Default filetype, color if unrecognized (like a text file to write notes)
-function FiletypeFallback()
+function FiletypeTxt()
     if expand('<afile>') !~? '/vim/'
         set filetype=markdown
         colorscheme OceanicNext
@@ -394,7 +403,14 @@ function FiletypeFallback()
 endfunction
 augroup DefaultFiletype
     autocmd!
-    autocmd BufEnter *.txt call FiletypeFallback()
+    autocmd BufEnter *.txt call FiletypeTxt()
+augroup END
+
+
+" K for a vim help file to go to that topic, normally ctrl-]
+augroup VimHelpFile
+    autocmd!
+    autocmd Filetype help noremap <buffer> K <C-]>
 augroup END
 
 
@@ -424,6 +440,66 @@ function Autocomplete()
 endfunction
 inoremap <leader>.  </<C-O>:call Autocomplete()<CR><Right>
 nnoremap <leader>. i</<C-O>:call Autocomplete()<CR><Esc><Right><Right>
+
+
+" Ctrl-w will do the usual 'window-mode' instead of deleting previous word in insert mode
+inoremap <C-w> <C-o><C-w>
+
+
+
+" Opt-` or Cmd-` are used to copy-paste text in, removing line numbers.
+" This is primarily because on remote machines, iTerm2 needs to copy to local Machine with opt-select
+function ToggleCopyState()
+    " We determine all by whether we have line-numbers or not
+    " Number is always 1, it's only RelativeNumber that can be on or off
+    let has_line_number = &number + &relativenumber > 0
+    if has_line_number
+        echom 'entering paste mode'
+        let b:previous_rnu = &relativenumber
+        set paste
+        set nonumber
+        set norelativenumber
+    else
+        set nopaste
+        set number
+        let &rnu = b:previous_rnu
+        echom 'existing paste mode'
+	endif
+endfunction
+noremap <leader>`   :call ToggleCopyState()<CR>
+
+
+" Cmd-Shift-V to paste via "*p to speed up large inserts in iTerm2 (only will work locally)
+nnoremap <leader>V "*p
+inoremap <leader>V <C-o>"*p
+
+
+" Cmt-t to open a a new tab within vim
+noremap  <leader>T :tabe<CR>
+noremap! <leader>T :tabe<CR>
+
+
+" LEFT OFF HERE...
+" Should we have TWO saves? One normal, and then one which ALSO resources the vimrc file?
+" Cmd-s to save, if a new file, prompt for the name
+function SaveFile()
+   " If the filename doesn't exist, prompt the use to enter one
+    if len(expand('%')) == 0
+        execute 'w ' . input('Save File As: ')
+    else
+        w
+    endif
+endfunction
+
+noremap  <leader>S         :silent call SaveFile()<CR>
+inoremap <leader>S    <C-o>:silent call SaveFile()<CR>
+cnoremap <leader>S    <C-c>:silent call SaveFile()<CR>
+" noremap  <expr> <leader>S    &filetype ==? 'vim' ? ":silent call SaveFile() \| source $MYVIMRC<CR>" : ':silent call SaveFile()<CR>'
+" noremap! <expr> <leader>S    &filetype ==? 'vim' ? "<C-o>:silent call SaveFile() \| source $MYVIMRC<CR>" : '<C-o>:silent call SaveFile()<CR>'
+" various 'write' optionsasdfasdfi 
+" re-source a vimrc file
+" save a file
+" re-source the existing 
 
 
 " }}}
@@ -461,6 +537,7 @@ endfunction
 " }}}
 " TO FINISH {{{1
 
+" nnoremap <leader>sv :source $MYVIMRC \| edit!<cr>
 
 " "Tagbar
  " nnoremap <leader>m :TagbarToggle<CR>
@@ -478,17 +555,6 @@ endfunction
 " nnoremap <leader>o :NERDTreeFind<CR>C<CR>
 " inoremap <leader>o <Esc>:NERDTreeFind<CR>C<CR>
 " vnoremap <leader>o <Esc>:NERDTreeFind<CR>C<CR>
-
-" "When in insert mode allow ctrl-w w to go to other window
-" inoremap <C-w> <C-o><C-w>
-
-" " Paste -- sort of a workaround to iTerm2's crappy/slow paste
-" nnoremap <leader>p "*p
-" inoremap <leader>p <C-o>"*p
-
-" autocmd BufNewFile,BufRead *.txt set filetype=markdown
-" autocmd BufNewFile,BufRead *.txt colorscheme OceanicNext
-" autocmd BufNewFile,BufRead ?^[^.]\+$ colorscheme OceanicNext
 
 
 
@@ -552,27 +618,5 @@ endfunction
 " nnoremap <silent> # :call FormatInput()<CR>
 
 
-" " Toggle the line number for  copy/paste: https://stackoverflow.com/a/61952187/651174
-" " Vimscript file settings ----
-" function! MagicNumberToggle() abort
-    " if &nu + &rnu == 0
-        " set nopaste
-        " let &nu = g:old_nu
-        " let &rnu = g:old_rnu
-        " exe "normal! l\<esc>"
-    " else
-        " set paste
-        " let g:old_nu = &nu
-        " let g:old_rnu = &rnu
-        " let &nu = 0
-        " let &rnu =0
-        " exe "normal! h"
-    " endif
-" endfunction
-" nnoremap <leader>Z :call MagicNumberToggle()<cr>
-" "
-
-
-" nnoremap <leader>sv :source $MYVIMRC \| edit!<cr>
 " }}}
 

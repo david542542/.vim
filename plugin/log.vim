@@ -21,8 +21,9 @@ function LogOutput(msg, level=g:log_level_default, info={})
     let func = get(a:info, 'func', '')
     let line = get(a:info, 'line', '')
 
-    " Print the output
-    echom(printf("[%s] %s - %s - %s- L%s: %s", time, a:level, file, func, line, a:msg))
+    " Sometimes the event will be on a file that has not yet been saved.
+    if file == '' | let file = '[nofile]' | endif
+    echom(printf("[%s] %5s - %-12s - %s - L%s: %s", time, a:level, file, func, line, a:msg))
     
     redir END
 
