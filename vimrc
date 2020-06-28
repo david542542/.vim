@@ -247,6 +247,14 @@ endif
 
 " Mappings {{{1
 
+ 
+" Cmd-Z, Cmd-Shift-Z to undo/redo
+nnoremap <leader>Z u
+inoremap <leader>Z <C-o>u
+nnoremap <leader>ZZ <C-r>
+inoremap <leader>ZZ <C-o><C-r>
+
+
 " Cmd-G to open FuzzyFilesFinder
 noremap  <leader>G :Files<CR>
 noremap! <leader>G <C-C>:Files<CR>
@@ -303,7 +311,8 @@ inoremap 0<c-d> 0<c-d>
 
 
 " Ctrl-k to delete all text to right of cursor (dont care about digraphs)
-inoremap <C-k> <C-o>"_D
+" UPDATE: this is overridden by the ctrl-hjkl movement, so discard this
+" inoremap <C-k> <C-o>"_D
 
 
 " K to Allow reading help keywords between *some_word*, for example, *c_CTRL-R*
@@ -346,20 +355,52 @@ inoremap <leader>A <esc>ggVG
 " h,j,k,l to move in insert and command mode (ignore jk for command-line since one-line)
 noremap! <C-h> <Left>
 noremap! <C-l> <Right>
-inoremap <C-j> <Down>
-inoremap <C-k> <Up>
+
+function CheckIfBlank()
+    " Make sure we've properly indented if going up/down a line and that line is empty
+    if getline('.') =~ '^\s*$'
+        normal! S 
+    endif
+endfunction
+inoremap <C-j>  <Down><C-o>:call CheckIfBlank()<CR>
+inoremap <C-k>  <Up><C-o>:call CheckIfBlank()<CR>
 
 
 " Option-h,l to go forward/back a word (also allow it in normal mode -- override the H, L)
 " Option-right,left also mapped to same thing, to go forward/back a word in command-mode
-noremap! <leader>H <S-Left>
+" note: command-line and insert-mode have different defaults for S-Right, so need to fix
 noremap  <leader>H <S-Left>
-noremap! <leader>L <S-Right>
+noremap! <leader>H <S-Left>
 noremap  <leader>L <S-Right>
+cnoremap <leader>L <S-Right>
+inoremap <leader>L <C-o>e<Right>
 
 
 " Cmd-R to execute a command in command-line mode
 cnoremap <leader>R <CR>
+
+
+" Cmd-Opt-n to change the colorscheme
+noremap  <expr> <leader>N (g:colors_name ==? 'textmate') ? ':colorscheme OceanicNext<CR>' : ':colorscheme TextMate<CR>'
+noremap! <expr> <leader>N <C-o>(g:colors_name ==? 'textmate') ? ':colorscheme OceanicNext<CR>' : ':colorscheme TextMate<CR>'
+
+
+" Default filetype, color if unrecognized (like a text file to write notes)
+function FiletypeFallback()
+    if expand('<afile>') !~? '/vim/'
+        set filetype=markdown
+        colorscheme OceanicNext
+    endif
+endfunction
+augroup DefaultFiletype
+    autocmd!
+    autocmd BufEnter *.txt call FiletypeFallback()
+augroup END
+
+
+" Ctrl-K to delete text to the end of the line in command-line mode
+" see: *c_CTRL-\_e*, *getcmdline()*, and *getcmdpos()*
+cnoremap <C-k> <c-\>egetcmdline()[:getcmdpos()-1]<CR>
 
 
 " Option-space as &nbsp; in html
@@ -383,6 +424,38 @@ function Autocomplete()
 endfunction
 inoremap <leader>.  </<C-O>:call Autocomplete()<CR><Right>
 nnoremap <leader>. i</<C-O>:call Autocomplete()<CR><Esc><Right><Right>
+
+
+" }}}
+" Helpers {{{1
+
+" Log autocmd events to our logFile
+function ToggleEventLogger(events=[])
+    " Three examples:
+    "   ToggleEventLogger() --> will turn off event logging
+    "   ToggleEventLogger(['BufEnter', 'BufLeave']) --> show log for those two events only
+    "   ToggleEventLogger('*') --> log ALL events
+    " NOTE: great answer to filter out particual dangerous events: https://vi.stackexchange.com/a/26241/28904
+    let all_valid_events = getcompletion('', 'event')
+    let events = []
+    if type(a:events) == type([])
+        for e in a:events
+            " if item in list   --> index(list, item) != -1
+            " list.append(item) --> add(list, item)
+            if (all_valid_events->index(e) != -1)
+                call add (events, e)
+            endif
+        endfor
+    else
+        let events = all_valid_events
+    endif
+    augroup EventLogger
+        autocmd!
+        for event in events
+           exe printf('autocmd %s * silent call LogOutput("%s")', event, event)
+        endfor
+    augroup END
+endfunction
 
 
 " }}}
@@ -503,29 +576,3 @@ nnoremap <leader>. i</<C-O>:call Autocomplete()<CR><Esc><Right><Right>
 " nnoremap <leader>sv :source $MYVIMRC \| edit!<cr>
 " }}}
 
-" Log autocmd events to our logFile
-function ToggleEventLogger(events=[])
-    " Three examples:
-    "   ToggleEventLogger() --> will turn off event logging
-    "   ToggleEventLogger(['BufEnter', 'BufLeave']) --> show log for those two events only
-    "   ToggleEventLogger('*') --> log ALL events
-    let all_valid_events = getcompletion('', 'event')
-    let events = []
-    if type(a:events) == type([])
-        for e in a:events
-            " if item in list   --> index(list, item) != -1
-            " list.append(item) --> add(list, item)
-            if (all_valid_events->index(e) != -1)
-                call add (events, e)
-            endif
-        endfor
-    else
-        let events = all_valid_events
-    endif
-    augroup EventLogger
-        autocmd!
-        for event in events
-           exe printf('autocmd %s * silent call LogOutput("%s")', event, event)
-        endfor
-    augroup END
-endfunction
