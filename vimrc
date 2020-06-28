@@ -503,3 +503,29 @@ nnoremap <leader>. i</<C-O>:call Autocomplete()<CR><Esc><Right><Right>
 " nnoremap <leader>sv :source $MYVIMRC \| edit!<cr>
 " }}}
 
+" Log autocmd events to our logFile
+function ToggleEventLogger(events=[])
+    " Three examples:
+    "   ToggleEventLogger() --> will turn off event logging
+    "   ToggleEventLogger(['BufEnter', 'BufLeave']) --> show log for those two events only
+    "   ToggleEventLogger('*') --> log ALL events
+    let all_valid_events = getcompletion('', 'event')
+    let events = []
+    if type(a:events) == type([])
+        for e in a:events
+            " if item in list   --> index(list, item) != -1
+            " list.append(item) --> add(list, item)
+            if (all_valid_events->index(e) != -1)
+                call add (events, e)
+            endif
+        endfor
+    else
+        let events = all_valid_events
+    endif
+    augroup EventLogger
+        autocmd!
+        for event in events
+           exe printf('autocmd %s * silent call LogOutput("%s")', event, event)
+        endfor
+    augroup END
+endfunction
