@@ -247,7 +247,14 @@ endif
 
 " Mappings {{{1
 
+
+" Cmd-h,l to move between vim tabs
+noremap  <leader>1H      gT
+noremap! <leader>1H <C-c>gT
+noremap  <leader>1L      gt
+noremap! <leader>1L <C-c>gt
  
+
 " Cmd-Z, Cmd-Shift-Z to undo/redo
 nnoremap <leader>Z u
 inoremap <leader>Z <C-o>u
@@ -294,9 +301,10 @@ inoremap <C-e> <C-O>$
 noremap  <C-e> $l
 
 
-" Ctrl-s to go to first letter on the line
-inoremap <C-s> <C-O>^
-noremap  <C-s> ^
+" Ctrl-s (iTerm2) to go to first letter on the line
+" note: ctrl-s doesn't work on Mac (stop updating cmd?) so using leader instead
+inoremap <leader>c-s <C-o>^
+noremap  <leader>c-s ^
 
 
 " [Enter] -- When in normal mode, treat an Enter/Return like insert
@@ -324,6 +332,10 @@ nnoremap <expr> K   count(expand('<cWORD>'), '*') == 2 ?
 " Y so that it works like the C and D equivalents to yank text to the end of the line. See :h Y
 " Note that we do allow this one (unlike all the others) to be recursive)
 nnoremap Y y$`[
+
+" Y,y in visual-line mode should also make the cursor jump to the bottom of selection
+vnoremap <expr> Y (mode() ==# 'V') ? "y']" : "y"
+vnoremap <expr> y (mode() ==# 'V') ? "y']" : "y"
 
 
 " When pressing escape don't creep backwards -- because <Esc> on lhs, need to re-map arrows-prefix
@@ -389,10 +401,6 @@ noremap! <expr> <leader>NN <C-o>(g:colors_name ==? 'textmate') ? ':colorscheme O
 noremap  <leader>N :set rnu!<CR>
 noremap! <leader>N <C-c>:set rnu!<CR>
 
-
-" Y,y in visual-line mode should also make the cursor jump to the bottom of selection
-vnoremap <expr> Y (mode() ==# 'V') ? "Y']" : "Y"
-vnoremap <expr> y (mode() ==# 'V') ? "Y']" : "Y"
 
 " Default filetype, color if unrecognized (like a text file to write notes)
 function FiletypeTxt()
@@ -476,7 +484,7 @@ inoremap <leader>V <C-o>"*p
 
 " Cmt-t to open a a new tab within vim
 noremap  <leader>T :tabe<CR>
-noremap! <leader>T :tabe<CR>
+noremap! <leader>T <C-c>:tabe<CR>
 
 
 " LEFT OFF HERE...
@@ -491,9 +499,10 @@ function SaveFile()
     endif
 endfunction
 
-noremap  <leader>S         :silent call SaveFile()<CR>
-inoremap <leader>S    <C-o>:silent call SaveFile()<CR>
-cnoremap <leader>S    <C-c>:silent call SaveFile()<CR>
+nnoremap  <leader>S         :silent call SaveFile()<CR>
+vnoremap  <leader>S    <C-c>:silent call SaveFile()<CR>gv
+inoremap  <leader>S    <C-c>`^:silent call SaveFile()<CR>
+cnoremap  <leader>S    <C-c>:silent call SaveFile()<CR>
 " noremap  <expr> <leader>S    &filetype ==? 'vim' ? ":silent call SaveFile() \| source $MYVIMRC<CR>" : ':silent call SaveFile()<CR>'
 " noremap! <expr> <leader>S    &filetype ==? 'vim' ? "<C-o>:silent call SaveFile() \| source $MYVIMRC<CR>" : '<C-o>:silent call SaveFile()<CR>'
 " various 'write' optionsasdfasdfi 
