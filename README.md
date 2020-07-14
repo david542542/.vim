@@ -26,6 +26,8 @@ $ sudo make
 $ sudo make install
 ```
 
+
+
 2. Copy over the various shortcuts that are helpful in the `.bash_profile`:
 
 
