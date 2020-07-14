@@ -30,6 +30,7 @@ $ sudo make install
 
 2. Copy over the various shortcuts that are helpful in the `.bash_profile`:
 
+```
 if [ -z "$(grep 'VIM,TMUX' ~/.bash_profile)" ]
 then
     echo '# VIM,TMUX stuff'                 >> ~/.bash_profile
@@ -50,4 +51,4 @@ then
 else
     echo lines already added
 fi
-
+```
