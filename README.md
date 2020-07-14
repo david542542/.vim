@@ -1,4 +1,4 @@
-1. Make sure vim is installed and version 8.2+
+1. **Make sure vim is installed and version 8.2+**
 ---
 ```
 # To update vim
@@ -28,7 +28,8 @@ $ sudo make install
 
 
 
-2. Copy over the various shortcuts that are helpful in the `.bash_profile`:
+2. **Copy over the various shortcuts that are helpful in the `.bash_profile`:**
+---
 
 ```
 if [ -z "$(grep 'VIM,TMUX' ~/.bash_profile)" ]
