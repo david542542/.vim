@@ -1,6 +1,6 @@
-# RUN THESE COMMANDS
+1. Make sure vim is installed and version 8.2+
+---
 ```
-
 # To update vim
 sudo add-apt-repository ppa:jonathonf/vim
 sudo apt update
