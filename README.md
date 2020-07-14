@@ -16,6 +16,7 @@ Travis: `sudo apt-get install vim-gtk`
 
 On CentOS:
 
+```
 # https://phoenixnap.com/kb/how-to-install-vim-centos-7
 $ sudo yum install gcc make ncurses ncurses-devel
 $ sudo git clone https://github.com/vim/vim.git
@@ -23,5 +24,6 @@ $ cd vim
 $ sudo ./configure --with-features=huge --enable-multibyte --enable-pythoninterp
 $ sudo make
 $ sudo make install
+```
 
 
