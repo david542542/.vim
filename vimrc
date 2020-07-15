@@ -135,9 +135,12 @@ set timeoutlen=60 ttimeoutlen=20
 " Do not auto-wrap comments and don't insert comments when pressing o/O. See: :h *fo-table* and :h *'formatoptions'*
 set formatoptions-=cro
 
-
 " Allow backspace to actually delete things in insert mode (one of the strangest default behaviors otherwise). See :h *'backspace'
 set backspace=indent,eol,start
+
+" Allow very high level of Undo
+set undolevels=5000
+
 
 " }}}
 " Plugins {{{1
@@ -147,7 +150,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'easymotion/vim-easymotion'
 
     " Vim-airline: status-bar for vim: https://github.com/vim-airline/vim-airline
-        Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'tpope/vim-fugitive'
 
@@ -181,6 +184,8 @@ call plug#begin('~/.vim/plugged')
     else
         let snips_installed = 0
     endif
+
+
 call plug#end()
 "}}}
 " Plugin-Settings {{{1
@@ -269,7 +274,7 @@ noremap! <leader>G <C-C>:Files<CR>
 
 " Cmd-K to open URL in default browser
 " Note that <C-R> allows us to add in things like <C-F> (filepath), <C-W> (word), <C-A> (WORD). See :h c_CTRL-R
-nnoremap <leader>O :execute 'silent !open' fnameescape(expand('<cfile>')) \| redraw!<CR>
+nnoremap <leader>K :execute 'silent !open' fnameescape(expand('<cfile>')) \| redraw!<CR>
 
 
 " Cmd-[,] to Ident/Dedent -- change the level of indent so consistent in each mode
@@ -324,9 +329,9 @@ inoremap 0<c-d> 0<c-d>
 
 
 " K to Allow reading help keywords between *some_word*, for example, *c_CTRL-R*
-nnoremap <expr> K   count(expand('<cWORD>'), '*') == 2 ?
-                    \ printf(':h %s<CR>', matchstr(expand('<cWORD>'), '\*\zs[^*]\+\ze\*'))
-                    \ : 'K'
+" nnoremap <expr> K   count(expand('<cWORD>'), '*') == 2 ?
+                    " \ printf(':h %s<CR>', matchstr(expand('<cWORD>'), '\*\zs[^*]\+\ze\*'))
+                    " \ : 'K'
 
 
 " Y so that it works like the C and D equivalents to yank text to the end of the line. See :h Y
@@ -394,7 +399,7 @@ cnoremap <leader>R <CR>
 
 " Cmd-Opt-n to change the colorscheme
 noremap  <expr> <leader>NN (g:colors_name ==? 'textmate') ? ':colorscheme OceanicNext<CR>' : ':colorscheme TextMate<CR>'
-noremap! <expr> <leader>NN <C-o>(g:colors_name ==? 'textmate') ? ':colorscheme OceanicNext<CR>' : ':colorscheme TextMate<CR>'
+noremap! <expr> <leader>NN (g:colors_name ==? 'textmate') ? '<C-o>:colorscheme OceanicNext<CR>' : '<C-o>:colorscheme TextMate<CR>'
 
 
 " Cmd-Opt-Ctrl-n to toggle the relative line numbers
@@ -419,6 +424,7 @@ augroup END
 augroup VimHelpFile
     autocmd!
     autocmd Filetype help noremap <buffer> K <C-]>
+    autocmd Filetype help noremap <buffer> <CR> <C-]>
 augroup END
 
 
@@ -564,67 +570,6 @@ endfunction
 " nnoremap <leader>o :NERDTreeFind<CR>C<CR>
 " inoremap <leader>o <Esc>:NERDTreeFind<CR>C<CR>
 " vnoremap <leader>o <Esc>:NERDTreeFind<CR>C<CR>
-
-
-
-" function IsNumber(str)
-    " return match(a:str, '^\d\+$') != -1
-" endfunction
-
-" function FormatInput()
-
-    " try
-        " let example_line = getreg('*', 1, 1)[1]
-    " catch
-        " call LogOutput('Not enough lines -- exiting', "WARNING", {'line': expand('<sflnum>'), 'func': expand('<sfile>')[9:]})
-        " return
-    " endtry
-    " call LogOutput('Example line: ' . example_line, "INFO", {'line': expand('<sflnum>'), 'func': expand('<sfile>')[9:]})
-
-    " " See if its a number or not
-    " let terms = split(example_line, '\t')
-    " let num_terms = len(terms)
-    " call LogOutput("Num terms parsed: " . num_terms, "INFO", {'line': expand('<sflnum>'), 'func': expand('<sfile>')[9:]})
-    " if num_terms <= 2
-
-        " normal! "*p
-        " '[,']sort
-
-        " " If just one term, convert it to a tuple
-        " if num_terms == 1
-
-
-            " " Whether we parse the item as a number (no quotes) or as a string
-            " normal! '[V']J
-            " if IsNumber(example_line)
-                " s/ /,/g
-                " execute "normal! i(\<c-o>$)\<esc>V\"*y"
-                " call LogOutput("Parsing as num", "INFO", {'line': expand('<sflnum>'), 'func': expand('<sfile>')[9:]})
-            " else
-                " s/ /","/g
-                " execute "normal! i(\"\<c-o>$\")\<esc>V\"*y"
-                " call LogOutput("Parsing as string", "INFO", {'line': expand('<sflnum>'), 'func': expand('<sfile>')[9:]})
-            " endif
-
-        " " if two terms, parse it into a dict
-        " " check if number for each term to see whether we need to quote it
-        " else
-            " call LogOutput("Parsing as dict", "INFO", {'line': expand('<sflnum>'), 'func': expand('<sfile>')[9:]})
-            " let [q1, q2, q3, q4] = ['', '', '', '']
-            " hello this is me if !IsNumber(terms[0]) | let [q1, q2] = ['"', '"'] | endif
-            " if !IsNumber(terms[1]) | let [q3, q4] = ['"', '"'] | endif
-            " let regex = "'[,']" . printf('s/\v([^\t]+)\t(.+)/%s\1%s:%s\2%s,/', q1, q2, q3, q4)
-            " execute(regex)
-            " '[,'] join
-            " execute "normal! i{\<c-o>$}\<esc>V\"*y"
-        " endif
-
-    " else
-        " call LogOutput("Only one or two terms currently supported.", "INFO", {'line': expand('<sflnum>'), 'func': expand('<sfile
-        " return
-    " endif
-" endfunc
-" nnoremap <silent> # :call FormatInput()<CR>
 
 
 " }}}
