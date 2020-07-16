@@ -8,8 +8,9 @@ set background=dark
 " Required for the colorscheme and theme to work
 syntax on
 
-" By default we will use absolute numbers, we can also toggle this, for example for copy/pastes
+" By default we will use absolute and relative numbers, we can also toggle this, for example for copy/pastes
 set number
+set rnu
 
 " Highlight the line of the cursor. Makes it a bit easier to find where the cursor is with no mouse.
 set cursorline
@@ -26,6 +27,11 @@ if exists('+termguicolors')
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     set termguicolors
 endif
+
+" Use bash as the default shell syntax, related to: https://vi.stackexchange.com/a/26450/28904
+let g:is_bash = 1
+
+
 " Folding {{{1
 
 " For the vim/vimrc filetype, allow manual folding via {{{ ... }}}
@@ -37,19 +43,19 @@ augroup END
 " Save and restore manual folds when we exit a file
 " note: this will also save mappings and abbreviations and such, be careful!
 " augroup SaveManualFolds
-    " autocmd!
-    " au BufWrite,VimLeave,BufLeave,BufWinLeave       ?*  mkview
-    " au BufWinEnter,BufRead                          ?*  loadview
+" autocmd!
+" au BufWrite,VimLeave,BufLeave,BufWinLeave       ?*  mkview
+" au BufWinEnter,BufRead                          ?*  loadview
 " augroup END
 
 " Consistency for Manual folds (previously was different on Mac vs Linux)
 " Default is '+-- XX lines: WORD '
-function ManualFoldText()
-    let line = trim(getline(v:foldstart))
-    let line = split(line, '{{')[0]->trim(' "')
-    return printf('+--%3s lines: %s ', v:foldend - v:foldstart, line)
-endfunction
-set foldtext=ManualFoldText()
+" function ManualFoldText()
+    " let line = trim(getline(v:foldstart))
+    " let line = split(line, '{{')[0]->trim(' "')
+    " return printf('+--%3s lines: %s ', v:foldend - v:foldstart, line)
+" endfunction
+" set foldtext=ManualFoldText()
 
 
 " Search {{{1
@@ -133,7 +139,8 @@ set mouse=nvi
 set timeoutlen=60 ttimeoutlen=20
 
 " Do not auto-wrap comments and don't insert comments when pressing o/O. See: :h *fo-table* and :h *'formatoptions'*
-set formatoptions-=cro
+" set formatoptions-=cro
+autocmd Filetype * set formatoptions-=cro
 
 " Allow backspace to actually delete things in insert mode (one of the strangest default behaviors otherwise). See :h *'backspace'
 set backspace=indent,eol,start
@@ -146,44 +153,44 @@ set undolevels=5000
 " Plugins {{{1
 call plug#begin('~/.vim/plugged')
 
-    " Easy-motion: https://github.com/easymotion/vim-easymotion
-    Plug 'easymotion/vim-easymotion'
+" Easy-motion: https://github.com/easymotion/vim-easymotion
+Plug 'easymotion/vim-easymotion'
 
-    " Vim-airline: status-bar for vim: https://github.com/vim-airline/vim-airline
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
-    Plug 'tpope/vim-fugitive'
+" Vim-airline: status-bar for vim: https://github.com/vim-airline/vim-airline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
 
-    " Fuzzy-File Finder, cmd-G to easily open recent files: https://github.com/junegunn/fzf.vim
-    Plug 'junegunn/fzf'
-    Plug 'junegunn/fzf.vim'
+" Fuzzy-File Finder, cmd-G to easily open recent files: https://github.com/junegunn/fzf.vim
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
-    " Autoformat xml, json, python files with shortcut key: https://github.com/Chiel92/vim-autoformat
-    Plug 'Chiel92/vim-autoformat'
+" Autoformat xml, json, python files with shortcut key: https://github.com/Chiel92/vim-autoformat
+Plug 'Chiel92/vim-autoformat'
 
-    "" Surround, helpful for html tags and quoting, especially: https://github.com/tpope/vim-surround
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-repeat'
+"" Surround, helpful for html tags and quoting, especially: https://github.com/tpope/vim-surround
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 
-    " Commenter, for cmd-/ shortcut to comment/uncomment lines: https://github.com/preservim/nerdcommenter
-    Plug 'preservim/nerdcommenter'
+" Commenter, for cmd-/ shortcut to comment/uncomment lines: https://github.com/preservim/nerdcommenter
+Plug 'preservim/nerdcommenter'
 
-    " NerdTree, to simplify file nagivation: https://github.com/preservim/nerdtree
-    Plug 'preservim/nerdtree'
+" NerdTree, to simplify file nagivation: https://github.com/preservim/nerdtree
+Plug 'preservim/nerdtree'
 
-    " TagBar -- show ctags (functions and classes) on the right: https://github.com/majutsushi/tagbar
-    " note: we may want to delete this plugin, as not sure how useful it really is in everyday usage
-    Plug 'majutsushi/tagbar'
+" TagBar -- show ctags (functions and classes) on the right: https://github.com/majutsushi/tagbar
+" note: we may want to delete this plugin, as not sure how useful it really is in everyday usage
+Plug 'majutsushi/tagbar'
 
-    " UtiliSnips to add code-snippets: https://github.com/SirVer/ultisnips
-    " For whatever reason, not working/compiling with python version 3.4
-    if has('python3') && (py3eval('sys.version_info')[2] >= 7)
-        Plug 'SirVer/ultisnips'
-        Plug 'honza/vim-snippets'
-        let snips_installed = 1
-    else
-        let snips_installed = 0
-    endif
+" UtiliSnips to add code-snippets: https://github.com/SirVer/ultisnips
+" For whatever reason, not working/compiling with python version 3.4
+if has('python3') && (py3eval('sys.version_info')[2] >= 7)
+    Plug 'SirVer/ultisnips'
+    Plug 'honza/vim-snippets'
+    let snips_installed = 1
+else
+    let snips_installed = 0
+endif
 
 
 call plug#end()
@@ -206,7 +213,7 @@ for folder in ALL_FOLDERS
     endif
 endfor
 let $FZF_DEFAULT_COMMAND = printf("find %s ! -path '*site-packages/*' ! -path '*.git/*' ! -name '*.pyc'
-                                \ -maxdepth 4 -type f -exec ls -t {} +", ' '.join(VALID_FOLDERS))
+            \ -maxdepth 4 -type f", ' '.join(VALID_FOLDERS))
 unlet home | unlet ALL_FOLDERS | unlet VALID_FOLDERS
 
 " How much space FZF will take, this sets it to take up the bottom 1/3
@@ -230,6 +237,37 @@ let g:NERDSpaceDelims = 1
 let g:NERDToggleCheckAllLines = 1
 
 
+" ** Tagbar ** 
+" <Enter>, p        - go to place in code (p stays in Tagbar)
+" ctrl-n, ctrl-p    - go to next/previous top-level section
+" o                 - toggle fold
+nnoremap <leader>M :TagbarToggle<CR>
+inoremap <leader>M <C-o>:TagbarToggle<CR>
+vnoremap <leader>M <Esc>:TagbarToggle<CR>gv
+" When opening tagbar, move cursor to it
+let g:tagbar_autofocus = 1
+" Sort by the order in the file (not alphabetically)
+let g:tagbar_sort = 0
+" Show line numbers (0 = none, 1 = absolute, 2 = relative)
+" note: this doesn't work well and is often overwritten by rnu settings
+let g:tagbar_show_linenumbers = 1
+" Tagbar width
+let g:tagbar_width = 40
+
+
+" ** Nerdtree ** 
+" o/O       -- Open/close a folder (Xo close-all recursively)
+" u/U       -- Go up a folder
+" m         -- Show menu (to add, delete, rename files or folders)
+" C         -- Go into directory and make it the cd
+let NERDTreeShowLineNumbers=1
+noremap  <leader>1N      :NERDTreeToggle<CR>
+noremap! <leader>1N <Esc>:NERDTreeToggle<CR>
+" Open NERDTree and go to the directory of the existing file
+noremap  <leader>1O      :NERDTreeFind<CR>zz
+noremap! <leader>1O <Esc>:NERDTreeFind<CR>zz
+
+
 "}}}
 " Abbreviations/Snippets {{{1
 
@@ -246,11 +284,69 @@ if !snips_installed
     augroup VimLogger
         autocmd!
         autocmd Filetype vim iabbrev <buffer> log call LogOutput(*, "DEBUG", {'line': expand('<sflnum>'), 'func': expand('<sfile>')[9:]})
-                                                       \ <C-c>F*cl<C-R>=getchar(0)[-1]<CR>
+                    \ <C-c>F*cl<C-R>=getchar(0)[-1]<CR>
     augroup END
 endif
 
 " Mappings {{{1
+
+
+" Up arrow to go to last command
+nnoremap    <Up>    :<Up>
+
+
+" Matching braces
+inoremap [  []<Left>
+inoremap (  ()<Left>
+inoremap {  {}<Left>
+
+
+" Matching HTML tags
+augroup MatchingTags
+    autocmd!
+    autocmd Filetype html,htmldjango,xml inoremap <  <><Left>
+augroup END
+
+
+" Matching quotes
+let FT_IGNORE_QUOTES = ['vim', 'markdown', 'help']
+autocmd Filetype * if index(FT_IGNORE_QUOTES, &filetype) == -1 | inoremap <buffer> '  ''<Left>| endif
+autocmd Filetype * if index(FT_IGNORE_QUOTES, &filetype) == -1 | inoremap <buffer> "  ""<Left>| endif
+
+
+" ** Format as various filetypes **
+" Ctrl-Opt-Cmd-X: Format as XML
+noremap  <leader>2X <C-c>:set ft=xml<CR>:Autoformat<CR>
+noremap! <leader>2X <C-c>:set ft=xml<CR>:Autoformat<CR>
+
+" Ctrl-Opt-Cmd-T: Format as HTML (note: Ctrl-Opt-Cmd-H used for going to previous window)
+" note: sometimes we also may way to format it first as XML then HTML for minified indenting
+noremap  <leader>2T <C-c>:set ft=htmldjango<CR>:Autoformat<CR>
+noremap! <leader>2T <C-c>:set ft=htmldjango<CR>:Autoformat<CR>
+
+" Ctrl-Opt-Cmd-J: Format as JS/JSON
+noremap   <expr><leader>2J (&ft== 'json') ?      ':set ft=javascript \| Autoformat<CR>'   : ':set ft=json \| Autoformat<CR>'
+noremap!  <expr><leader>2J (&ft== 'json') ? '<C-c>:set ft=javascript \| Autoformat<CR>'   : '<C-c>:set ft=json \| Autoformat<CR>'
+
+" Ctrl-Opt-Cmd-P: Format as Python
+noremap  <leader>2P <C-c>:set ft=python<CR>:Autoformat<CR>
+noremap! <leader>2P <C-c>:set ft=python<CR>:Autoformat<CR>
+
+
+
+"Cmd-w to quit things
+noremap  <leader>W      :q!<CR>
+noremap! <leader>W <C-c>:q!<CR>
+
+
+" Cmd-o to open a file
+noremap  <leader>O      :e! <C-r>=getcwd()<CR>/
+noremap! <leader>O <C-c>:e! <C-r>=getcwd()<CR>/
+
+
+" S to go to the proper indent in normal mode
+nnoremap <expr> S   (getline('.') =~ '\S') ? 'S' : '"_ddko'
+
 
 
 " Cmd-h,l to move between vim tabs
@@ -258,7 +354,7 @@ noremap  <leader>1H      gT
 noremap! <leader>1H <C-c>gT
 noremap  <leader>1L      gt
 noremap! <leader>1L <C-c>gt
- 
+
 
 " Cmd-Z, Cmd-Shift-Z to undo/redo
 nnoremap <leader>Z u
@@ -330,8 +426,8 @@ inoremap 0<c-d> 0<c-d>
 
 " K to Allow reading help keywords between *some_word*, for example, *c_CTRL-R*
 " nnoremap <expr> K   count(expand('<cWORD>'), '*') == 2 ?
-                    " \ printf(':h %s<CR>', matchstr(expand('<cWORD>'), '\*\zs[^*]\+\ze\*'))
-                    " \ : 'K'
+" \ printf(':h %s<CR>', matchstr(expand('<cWORD>'), '\*\zs[^*]\+\ze\*'))
+" \ : 'K'
 
 
 " Y so that it works like the C and D equivalents to yank text to the end of the line. See :h Y
@@ -376,7 +472,7 @@ noremap! <C-l> <Right>
 function CheckIfBlank()
     " Make sure we've properly indented if going up/down a line and that line is empty
     if getline('.') =~ '^\s*$'
-        normal! S 
+        normal! S
     endif
 endfunction
 inoremap <C-j>  <Down><C-o>:call CheckIfBlank()<CR>
@@ -408,15 +504,15 @@ noremap! <leader>N <C-c>:set rnu!<CR>
 
 
 " Default filetype, color if unrecognized (like a text file to write notes)
-function FiletypeTxt()
-    if expand('<afile>') !~? '/vim/'
+function IsHelpFile()
+    if trim(getline('$')[0:3]) !=? 'vim'
         set filetype=markdown
         colorscheme OceanicNext
     endif
 endfunction
 augroup DefaultFiletype
     autocmd!
-    autocmd BufEnter *.txt call FiletypeTxt()
+    autocmd BufEnter *.txt call IsHelpFile()
 augroup END
 
 
@@ -478,7 +574,7 @@ function ToggleCopyState()
         set number
         let &rnu = b:previous_rnu
         echom 'existing paste mode'
-	endif
+    endif
 endfunction
 noremap <leader>`   :call ToggleCopyState()<CR>
 
@@ -493,28 +589,28 @@ noremap  <leader>T :tabe<CR>
 noremap! <leader>T <C-c>:tabe<CR>
 
 
-" LEFT OFF HERE...
-" Should we have TWO saves? One normal, and then one which ALSO resources the vimrc file?
 " Cmd-s to save, if a new file, prompt for the name
-function SaveFile()
-   " If the filename doesn't exist, prompt the use to enter one
+function SaveFile() abort
+    " If the filename doesn't exist, prompt the use to enter one
     if len(expand('%')) == 0
         execute 'w ' . input('Save File As: ')
     else
+        " Note: cannot resource this vim file from within a function
         w
     endif
 endfunction
 
-nnoremap  <leader>S         :silent call SaveFile()<CR>
-vnoremap  <leader>S    <C-c>:silent call SaveFile()<CR>gv
-inoremap  <leader>S    <C-c>`^:silent call SaveFile()<CR>
-cnoremap  <leader>S    <C-c>:silent call SaveFile()<CR>
-" noremap  <expr> <leader>S    &filetype ==? 'vim' ? ":silent call SaveFile() \| source $MYVIMRC<CR>" : ':silent call SaveFile()<CR>'
-" noremap! <expr> <leader>S    &filetype ==? 'vim' ? "<C-o>:silent call SaveFile() \| source $MYVIMRC<CR>" : '<C-o>:silent call SaveFile()<CR>'
-" various 'write' optionsasdfasdfi 
-" re-source a vimrc file
-" save a file
-" re-source the existing 
+nnoremap   <silent> <leader>S               :call SaveFile()<CR>
+vnoremap   <silent> <leader>S          <C-c>:call SaveFile()<CR>gv
+inoremap   <silent> <leader>S          <C-c>`^:call SaveFile()<CR>
+cnoremap   <silent> <leader>S          <C-c>:call SaveFile()<CR>
+
+
+" Shift-Cmd-s to save and resouce a vim file
+noremap  <silent> <expr> <leader>1S (&filetype ==? 'vim') ? ':w \| silent so %<CR>' : ''
+noremap! <silent> <expr> <leader>1S (&filetype ==? 'vim') ? '<C-c>:w \| silent so %<CR>' : ''
+
+
 
 
 " }}}
@@ -543,33 +639,10 @@ function ToggleEventLogger(events=[])
     augroup EventLogger
         autocmd!
         for event in events
-           exe printf('autocmd %s * silent call LogOutput("%s")', event, event)
+            exe printf('autocmd %s * silent call LogOutput("%s")', event, event)
         endfor
     augroup END
 endfunction
-
-
-" }}}
-" TO FINISH {{{1
-
-" nnoremap <leader>sv :source $MYVIMRC \| edit!<cr>
-
-" "Tagbar
- " nnoremap <leader>m :TagbarToggle<CR>
- " inoremap <leader>m <C-o>:TagbarToggle<CR>
- " vnoremap <leader>m <Esc>:TagbarToggle<CR>gv
-
-" "Nerdtree
-" "Go up a folder -- u or U (to keep old folder still open)
-" "Open/close a folder -- o or O (to open all), Xo (to close all recursively if opened)
-" let NERDTreeShowLineNumbers=1
-" nnoremap <leader>M :NERDTreeToggle<CR>
-" inoremap <leader>M <Esc>:NERDTreeToggle<CR>
-" vnoremap <leader>M <Esc>:NERDTreeToggle<CR>
-
-" nnoremap <leader>o :NERDTreeFind<CR>C<CR>
-" inoremap <leader>o <Esc>:NERDTreeFind<CR>C<CR>
-" vnoremap <leader>o <Esc>:NERDTreeFind<CR>C<CR>
 
 
 " }}}
