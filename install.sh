@@ -37,12 +37,10 @@ then
     echo 'alias vi="$VIM"'                  >> ~/.bash_profile
     echo 'alias V="cd ~/.vim"'              >> ~/.bash_profile
     echo 'alias S="source ~/.bash_profile"' >> ~/.bash_profile
-    echo 'alias ta="tmux -CC a -t"'         >> ~/.bash_profile
+    echo 'alias ta="tmux -CC a -dt"'        >> ~/.bash_profile
     echo 'alias tn="tmux -CC new -s"'       >> ~/.bash_profile
     echo 'alias tl="tmux ls"'               >> ~/.bash_profile
-    echo 'alias td="tmux ls"'               >> ~/.bash_profile
     echo 'alias tk="tmux kill-session -t"'  >> ~/.bash_profile
-    echo 'alias t="tmux -CC a"'             >> ~/.bash_profile
     echo ''                                 >> ~/.bash_profile
     echo added new lines
 else
