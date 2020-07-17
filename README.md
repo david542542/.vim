@@ -20,6 +20,6 @@ $ sudo make install
 
 ---
 
-**As a last resort (vim-only): 
+**As a last resort (vim-only):**
 
 `sudo apt-get install vim-gtk`
