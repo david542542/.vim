@@ -1,4 +1,4 @@
-
+#!/bin/sh
 # # Check if we have vim version 8.1+ installed
 # VIM_PATH=$(which vim)
 # VIM_VERSION=$(vim --version |grep '8.[123]')
@@ -6,7 +6,9 @@
 # echo Vim version is: $VIM_VERSION
 
 # Get OS
-source /etc/os-release
+
+if [ -d /etc/os-release ]; then source /etc/os-release; else NAME='Mac'; fi
+echo $NAME
 if [ $NAME = 'Ubuntu' ]; then
     echo 1/3. updating vim...
     sudo add-apt-repository ppa:jonathonf/vim
@@ -23,7 +25,6 @@ if [ $NAME = 'Ubuntu' ]; then
     vim +PlugInstall +qall
 else
     echo 'Not ubuntu -- install manually'
-    exit
 fi
 
 if [ -z "$(grep 'VIM,TMUX' ~/.bash_profile)" ]
@@ -41,7 +42,7 @@ then
     echo 'alias tl="tmux ls"'               >> ~/.bash_profile
     echo 'alias tk="tmux kill-session -t"'  >> ~/.bash_profile
     echo ''                                 >> ~/.bash_profile
-    echo added new lines
+    echo added new Bash_profile lines
 else
-    echo lines already added
+    echo Bash_profile lines already added
 fi
