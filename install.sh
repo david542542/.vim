@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # # Check if we have vim version 8.1+ installed
 # VIM_PATH=$(which vim)
 # VIM_VERSION=$(vim --version |grep '8.[123]')
@@ -7,7 +7,7 @@
 
 # Get OS
 
-if [ -d /etc/os-release ]; then source /etc/os-release; else NAME='Mac'; fi
+if [ -a /etc/os-release ]; then source /etc/os-release; else NAME='Mac'; fi
 echo $NAME
 if [ $NAME = 'Ubuntu' ]; then
     echo 1/3. updating vim...
@@ -20,7 +20,7 @@ if [ $NAME = 'Ubuntu' ]; then
     if [ -d ~/.vim ]; then 
         rm -rf ~/.vim
     fi
-    git clone git@github.com:david542542/.vim.git
+    git clone https://github.com/david542542/.vim.git
     echo 3/3. installing plugins...
     vim +PlugInstall +qall
 else
