@@ -1,25 +1,12 @@
-To install on Ubuntu:
+**To install on Ubuntu (everything):**
 
 ```
 curl -O https://raw.githubusercontent.com/david542542/.vim/master/install.sh && sudo chmod a+x install.sh && ./install.sh && . ~/.bash_profile
 ```
 
 ---
-```
-# To update vim
-sudo add-apt-repository ppa:jonathonf/vim
-sudo apt update
-sudo apt install vim
 
-# To install the vim stuff
-apt-get install ctags # needs java if we want to do this
-cd ~ && git clone git@github.com:david542542/.vim.git
-vim +PlugInstall +qall
-```
-
-Travis: `sudo apt-get install vim-gtk`
-
-On CentOS:
+**On CentOS (vim-only):**
 
 ```
 # https://phoenixnap.com/kb/how-to-install-vim-centos-7
@@ -30,3 +17,9 @@ $ sudo ./configure --with-features=huge --enable-multibyte --enable-pythoninterp
 $ sudo make
 $ sudo make install
 ```
+
+---
+
+**As a last resort (vim-only):**
+
+`sudo apt-get install vim-gtk`
