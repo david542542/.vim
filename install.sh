@@ -12,7 +12,7 @@ if [ $NAME = 'Ubuntu' ]; then
     sudo add-apt-repository ppa:jonathonf/vim
     sudo apt update
     sudo apt install vim
-    apt-get install ctags # needs java if we want to do this
+    sudo apt-get install ctags # needs java if we want to do this
     echo 2/3. downloading vim from git...
     cd ~
     if [ -d ~/.vim ]; then 
@@ -28,6 +28,7 @@ fi
 
 if [ -z "$(grep 'VIM,TMUX' ~/.bash_profile)" ]
 then
+    sudo chmod a+w ~/.bash_profile
     echo '# VIM,TMUX stuff'                 >> ~/.bash_profile
     echo 'VIM="$(which vim)"'               >> ~/.bash_profile
     echo 'export EDITOR="$VIM"'             >> ~/.bash_profile
