@@ -8,7 +8,7 @@ syn match pythonUni     /\<\zsu\ze["']/
 
 "Python all caps var -- MAX_VALUE, VALUE
 syn match pythonCaps    /\<[A-Z_]\+\>/
- :hi pythonCaps         guifg=#c1341f cterm=bold
+:hi pythonCaps         guifg=#c1341f cterm=bold
 
 "Highlight Exceptions, Errors in python -- TypeError, MyCustomException
 syn match pythonExc     /\v<\w*(Error|Exception)\w*>/

@@ -2,3 +2,6 @@
 *.un~
 .DS_Store
 *.DS_Store
+plugged
+viminfo
+_vimrc

@@ -182,6 +182,10 @@ Plug 'preservim/nerdtree'
 " note: we may want to delete this plugin, as not sure how useful it really is in everyday usage
 Plug 'majutsushi/tagbar'
 
+" Python text objects: https://github.com/jeetsukumaran/vim-pythonsense
+Plug 'jeetsukumaran/vim-pythonsense'
+
+
 " UtiliSnips to add code-snippets: https://github.com/SirVer/ultisnips
 " For whatever reason, not working/compiling with python version 3.4
 if has('python3') && (py3eval('sys.version_info')[2] >= 7)
@@ -241,9 +245,6 @@ let g:NERDToggleCheckAllLines = 1
 " <Enter>, p        - go to place in code (p stays in Tagbar)
 " ctrl-n, ctrl-p    - go to next/previous top-level section
 " o                 - toggle fold
-nnoremap <leader>M :TagbarToggle<CR>
-inoremap <leader>M <C-o>:TagbarToggle<CR>
-vnoremap <leader>M <Esc>:TagbarToggle<CR>gv
 " When opening tagbar, move cursor to it
 let g:tagbar_autofocus = 1
 " Sort by the order in the file (not alphabetically)
@@ -254,18 +255,12 @@ let g:tagbar_show_linenumbers = 1
 " Tagbar width
 let g:tagbar_width = 40
 
-
 " ** Nerdtree ** 
 " o/O       -- Open/close a folder (Xo close-all recursively)
 " u/U       -- Go up a folder
 " m         -- Show menu (to add, delete, rename files or folders)
 " C         -- Go into directory and make it the cd
 let NERDTreeShowLineNumbers=1
-noremap  <leader>1N      :NERDTreeToggle<CR>
-noremap! <leader>1N <Esc>:NERDTreeToggle<CR>
-" Open NERDTree and go to the directory of the existing file
-noremap  <leader>1O      :NERDTreeFind<CR>zz
-noremap! <leader>1O <Esc>:NERDTreeFind<CR>zz
 
 
 "}}}
@@ -290,9 +285,14 @@ endif
 
 " Mappings {{{1
 
+" Ctrl-opt-cmd-F to fold a python function
+" note: this uses vim-pythonsense: 'af' for 'a function', 'ac' for class
+" ]m and [m to go to previous and next python function
+nmap   <Leader>1F   Vafzf
+
 
 " Up arrow to go to last command
-nnoremap    <Up>    :<Up>
+nnoremap    <Up>    :<C-p>
 
 
 " Matching braces
@@ -388,6 +388,17 @@ nmap  <leader>/ <Plug>NERDCommenterToggle
 vmap  <leader>/ <Plug>NERDCommenterToggle gv
 imap  <leader>/ <C-O><Plug>NERDCommenterToggle
 
+" Tagbar
+nnoremap <leader>M :TagbarToggle<CR>
+inoremap <leader>M <C-o>:TagbarToggle<CR>
+vnoremap <leader>M <Esc>:TagbarToggle<CR>gv
+
+" NERDTree
+noremap  <leader>1N      :NERDTreeToggle<CR>
+noremap! <leader>1N <Esc>:NERDTreeToggle<CR>
+" Open NERDTree and go to the directory of the existing file
+noremap  <leader>1O      :NERDTreeFind<CR>zz
+noremap! <leader>1O <Esc>:NERDTreeFind<CR>zz
 
 " "-->`   Map linewise-mark ' to instead characterwise-mark `
 nnoremap ' `
@@ -425,9 +436,9 @@ inoremap 0<c-d> 0<c-d>
 
 
 " K to Allow reading help keywords between *some_word*, for example, *c_CTRL-R*
-" nnoremap <expr> K   count(expand('<cWORD>'), '*') == 2 ?
-" \ printf(':h %s<CR>', matchstr(expand('<cWORD>'), '\*\zs[^*]\+\ze\*'))
-" \ : 'K'
+nnoremap <expr> K   count(expand('<cWORD>'), '*') == 2 ?
+    \ printf(':h %s<CR>', matchstr(expand('<cWORD>'), '\*\zs[^*]\+\ze\*'))
+    \ : 'K'
 
 
 " Y so that it works like the C and D equivalents to yank text to the end of the line. See :h Y
@@ -456,8 +467,8 @@ noremap! <leader>FF <C-c>/<C-r>/
 " Cmd-Shift-E to enter into command mode with most recent command
 noremap  <leader>E  <C-c>:
 noremap! <leader>E  <C-c>:
-noremap  <leader>EE <C-c>:<C-r>:
-noremap! <leader>EE <C-c>:<C-r>
+noremap  <leader>EE <C-c>:<Up>
+noremap! <leader>EE <C-c>:<Up>
 
 
 " Cmd-A to select all, sending A instead of a from iTerm (sending some odd escape)
@@ -505,7 +516,7 @@ noremap! <leader>N <C-c>:set rnu!<CR>
 
 " Default filetype, color if unrecognized (like a text file to write notes)
 function IsHelpFile()
-    if trim(getline('$')[0:3]) !=? 'vim'
+    if trim(getline('$')[0:3], '" ') !=? 'vim'
         set filetype=markdown
         colorscheme OceanicNext
     endif
@@ -611,6 +622,9 @@ noremap  <silent> <expr> <leader>1S (&filetype ==? 'vim') ? ':w \| silent so %<C
 noremap! <silent> <expr> <leader>1S (&filetype ==? 'vim') ? '<C-c>:w \| silent so %<CR>' : ''
 
 
+" With relative numbering, see if ( or ) helps with efficiency?
+nnoremap    <expr> (    (v:count == 0) ? '(' : 'k'
+nnoremap    <expr> )    (v:count == 0) ? ')' : 'j'
 
 
 " }}}
@@ -646,4 +660,3 @@ endfunction
 
 
 " }}}
-
