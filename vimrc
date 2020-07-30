@@ -186,6 +186,10 @@ Plug 'majutsushi/tagbar'
 Plug 'jeetsukumaran/vim-pythonsense'
 
 
+" Better matching parentheses and such: https://github.com/Raimondi/delimitMate 
+Plug 'Raimondi/delimitMate'
+
+
 " UtiliSnips to add code-snippets: https://github.com/SirVer/ultisnips
 " For whatever reason, not working/compiling with python version 3.4
 if has('python3') && (py3eval('sys.version_info')[2] >= 7)
@@ -202,13 +206,18 @@ call plug#end()
 " Plugin-Settings {{{1
 
 " Easy-Motion: Enter in two chars and then a label to jump there.
+" Also allow entering in a single char and pressing <Space> to search for that
 let g:EasyMotion_do_mapping = 0
 nmap s <Plug>(easymotion-overwin-f2)
+augroup EZMotion
+   autocmd!
+   autocmd VimEnter * EMCommandLineNoreMap <Space> <CR>
+augroup END
 
 " Fuzzy Files Finder folders to search. This is mapped with iTerm2 to Cmd-G.
 " The `:Files` command executes $FZF_DEFAULT_COMMAND by default, see: https://github.com/junegunn/fzf#environment-variables
 let home = isdirectory(expand('~/Desktop')) ? '~/Desktop' : '/home/ubuntu'
-let ALL_FOLDERS     =   [home . '/Ingest', home . '/Avails', home . '/Eidr', '~/.vim', home]
+let ALL_FOLDERS     =   [home . '/Ingest', home . '/Avails', home . '/Eidr', '~/.vim', home, home. '/Metadataorder']
 let VALID_FOLDERS   =   []
 
 for folder in ALL_FOLDERS
@@ -217,7 +226,7 @@ for folder in ALL_FOLDERS
     endif
 endfor
 let $FZF_DEFAULT_COMMAND = printf("find %s ! -path '*site-packages/*' ! -path '*.git/*' ! -name '*.pyc'
-            \ -maxdepth 4 -type f", ' '.join(VALID_FOLDERS))
+            \ -maxdepth 5 -type f", ' '.join(VALID_FOLDERS))
 unlet home | unlet ALL_FOLDERS | unlet VALID_FOLDERS
 
 " How much space FZF will take, this sets it to take up the bottom 1/3
@@ -285,20 +294,54 @@ endif
 
 " Mappings {{{1
 
+
+" Cmd-Shift-C to Copy (send to pbcopy) in visual mode
+" note: this works on ENTIRE lines, not good for partial lines, see: https://stackoverflow.com/a/9449010/651174
+nnoremap    <leader>C   <nop>
+vnoremap    <silent> <leader>C   :w! !pbcopy<CR><CR>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 " Ctrl-opt-cmd-F to fold a python function
 " note: this uses vim-pythonsense: 'af' for 'a function', 'ac' for class
 " ]m and [m to go to previous and next python function
 nmap   <Leader>1F   Vafzf
 
 
+" Ctrl-Delete to delete a full WORD backwards
+inoremap    <Leader>1D <C-o>dB
+
+" Opt-d to delete a full WORD forwards
+inoremap    <Leader>1d <C-o>dW
+
+
+
 " Up arrow to go to last command
-nnoremap    <Up>    :<C-p>
+" nnoremap    <Up>    :<C-p>
 
-
-" Matching braces
-inoremap [  []<Left>
-inoremap (  ()<Left>
-inoremap {  {}<Left>
 
 
 " Matching HTML tags
@@ -309,9 +352,9 @@ augroup END
 
 
 " Matching quotes
-let FT_IGNORE_QUOTES = ['vim', 'markdown', 'help']
-autocmd Filetype * if index(FT_IGNORE_QUOTES, &filetype) == -1 | inoremap <buffer> '  ''<Left>| endif
-autocmd Filetype * if index(FT_IGNORE_QUOTES, &filetype) == -1 | inoremap <buffer> "  ""<Left>| endif
+" let FT_IGNORE_QUOTES = ['vim', 'markdown', 'help']
+" autocmd Filetype * if index(FT_IGNORE_QUOTES, &filetype) == -1 | inoremap <buffer> '  ''<Left>| endif
+" autocmd Filetype * if index(FT_IGNORE_QUOTES, &filetype) == -1 | inoremap <buffer> "  ""<Left>| endif
 
 
 " ** Format as various filetypes **
@@ -516,7 +559,7 @@ noremap! <leader>N <C-c>:set rnu!<CR>
 
 " Default filetype, color if unrecognized (like a text file to write notes)
 function IsHelpFile()
-    if trim(getline('$')[0:3], '" ') !=? 'vim'
+    if getline('$') !~? 'vim'
         set filetype=markdown
         colorscheme OceanicNext
     endif
@@ -547,7 +590,7 @@ augroup HTML
 augroup END
 
 
-" Cmd-. to autocomplete tags, especially HTML, see *i_CTRL-X_CTRL-O*
+" Opt-Cmd-. to autocomplete tags, especially HTML, see *i_CTRL-X_CTRL-O*
 function Autocomplete()
     " See :h *complete-functions* for how to use the omni-complete
     " note: the following function is geared towards HTML
@@ -570,6 +613,9 @@ inoremap <C-w> <C-o><C-w>
 
 " Opt-` or Cmd-` are used to copy-paste text in, removing line numbers.
 " This is primarily because on remote machines, iTerm2 needs to copy to local Machine with opt-select
+" Alternately can use the below `pastetoggle`, as insert mode in paste mode will not map!
+" imap <leader>` <nop>
+" set pastetoggle=<leader>`
 function ToggleCopyState()
     " We determine all by whether we have line-numbers or not
     " Number is always 1, it's only RelativeNumber that can be on or off
@@ -577,19 +623,17 @@ function ToggleCopyState()
     if has_line_number
         echom 'entering paste mode'
         let b:previous_rnu = &relativenumber
-        set paste
         set nonumber
         set norelativenumber
+        set paste
     else
-        set nopaste
         set number
         let &rnu = b:previous_rnu
-        echom 'existing paste mode'
+        echom 'exiting paste mode'
+        set nopaste
     endif
 endfunction
 noremap <leader>`   :call ToggleCopyState()<CR>
-
-
 " Cmd-Shift-V to paste via "*p to speed up large inserts in iTerm2 (only will work locally)
 nnoremap <leader>V "*p
 inoremap <leader>V <C-o>"*p
@@ -613,7 +657,7 @@ endfunction
 
 nnoremap   <silent> <leader>S               :call SaveFile()<CR>
 vnoremap   <silent> <leader>S          <C-c>:call SaveFile()<CR>gv
-inoremap   <silent> <leader>S          <C-c>`^:call SaveFile()<CR>
+inoremap   <silent> <leader>S          <C-c>`^:call SaveFile()<CR>i
 cnoremap   <silent> <leader>S          <C-c>:call SaveFile()<CR>
 
 
