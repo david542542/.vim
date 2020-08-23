@@ -249,6 +249,10 @@ let g:NERDSpaceDelims = 1
 " Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
 
+" Override default assembly comments, from https://vi.stackexchange.com/a/26957/28904
+let g:NERDCustomDelimiters = {
+    \ 'asm': { 'left': '#', 'leftAlt': ';' }
+    \ }
 
 " ** Tagbar ** 
 " <Enter>, p        - go to place in code (p stays in Tagbar)
