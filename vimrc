@@ -356,7 +356,24 @@ augroup END
 " autocmd Filetype * if index(FT_IGNORE_QUOTES, &filetype) == -1 | inoremap <buffer> '  ''<Left>| endif
 " autocmd Filetype * if index(FT_IGNORE_QUOTES, &filetype) == -1 | inoremap <buffer> "  ""<Left>| endif
 
+" syntax highlighting for log files
+autocmd bufnewfile,bufread *.log set syntax=logtalk
 
+" tail files with command :tail and shortcut Ctrl-t
+function _Tail()
+    set ut=250
+    set autoread | au cursorhold * checktime | call feedkeys("G")
+endfunction
+command! Tail call _Tail()
+cnoreabbrev tail Tail
+nnoremap <C-t> :Tail<CR>
+
+" function CheckIfBlank()
+    " " Make sure we've properly indented if going up/down a line and that line is empty
+    " if getline('.') =~ '^\s*$'
+        " normal! S
+    " endif
+" endfunction
 " ** Format as various filetypes **
 " Ctrl-Opt-Cmd-X: Format as XML
 noremap  <leader>2X <C-c>:set ft=xml<CR>:Autoformat<CR>
