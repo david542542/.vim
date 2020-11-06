@@ -136,7 +136,7 @@ set mouse=nvi
 
 " The time that is waited for a mapped code to wait for the next keystroke,
 " for example if ii is mapped, if `i` is pressed, wait 80ms before going into `insert` mode if `i` is not pressed again.
-set timeoutlen=60 ttimeoutlen=20
+set timeoutlen=120 ttimeoutlen=20
 
 " Do not auto-wrap comments and don't insert comments when pressing o/O. See: :h *fo-table* and :h *'formatoptions'*
 " set formatoptions-=cro
@@ -249,6 +249,10 @@ let g:NERDSpaceDelims = 1
 " Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
 
+" Override default assembly comments, from https://vi.stackexchange.com/a/26957/28904
+let g:NERDCustomDelimiters = {
+    \ 'asm': { 'left': '#', 'leftAlt': ';' }
+    \ }
 
 " ** Tagbar ** 
 " <Enter>, p        - go to place in code (p stays in Tagbar)
@@ -298,31 +302,8 @@ endif
 " Cmd-Shift-C to Copy (send to pbcopy) in visual mode
 " note: this works on ENTIRE lines, not good for partial lines, see: https://stackoverflow.com/a/9449010/651174
 nnoremap    <leader>C   <nop>
-vnoremap    <silent> <leader>C   :w! !pbcopy<CR><CR>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"vnoremap   <silent> <leader>C   :w! !pbcopy<CR><CR>
+vnoremap    <silent> <leader>C   :w! !it2copy<CR><CR>
 
 
 " Ctrl-opt-cmd-F to fold a python function

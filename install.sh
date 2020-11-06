@@ -27,6 +27,12 @@ else
     echo 'Not ubuntu -- install manually'
 fi
 
+# Install it2copy
+URL="https://raw.githubusercontent.com/gnachman/iterm2-website/master/source/utilities/it2copy"
+cd /usr/bin && { sudo curl -O $URL ; cd -; }
+sudo chmod a+x /usr/bin/it2copy
+
+
 if [ -z "$(grep 'VIM,TMUX' ~/.bash_profile)" ]
 then
     sudo chmod a+w ~/.bash_profile
