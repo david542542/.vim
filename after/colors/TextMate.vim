@@ -10,6 +10,7 @@ endif
 
 let g:colors_name = "TextMate"
 
+
 hi Cursor ctermfg=15 ctermbg=0 cterm=NONE guifg=#ffffff guibg=#000000 gui=NONE
 hi Visual ctermfg=NONE ctermbg=189 cterm=NONE guifg=NONE guibg=#c6deff gui=NONE
 hi CursorLine ctermfg=NONE cterm=NONE guibg=#e8f3fd
@@ -20,22 +21,25 @@ hi CursorLineNR guifg=#FFFFFF
 
 hi VertSplit ctermfg=249 ctermbg=249 cterm=NONE guifg=#b5b5b5 guibg=#b5b5b5 gui=NONE
 hi MatchParen ctermfg=21 ctermbg=NONE cterm=underline guifg=#0000ff guibg=NONE gui=underline
+hi Delimiter ctermfg=21 ctermbg=NONE cterm=underline guifg=#0000ff guibg=NONE gui=underline
 hi StatusLine ctermfg=0 ctermbg=249 cterm=bold guifg=#000000 guibg=#b5b5b5 gui=bold
 hi StatusLineNC ctermfg=0 ctermbg=249 cterm=NONE guifg=#000000 guibg=#b5b5b5 gui=NONE
 hi Pmenu ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
 hi PmenuSel ctermfg=NONE ctermbg=189 cterm=NONE guifg=NONE guibg=#c6deff gui=NONE
 hi IncSearch ctermfg=15 ctermbg=22 cterm=NONE guifg=#ffffff guibg=#036a07 gui=NONE
+
 hi Search ctermfg=NONE ctermbg=NONE cterm=underline guifg=NONE guibg=NONE gui=underline
 hi Directory ctermfg=160 ctermbg=NONE cterm=bold guifg=#c5060b guibg=NONE gui=bold
 hi Folded ctermfg=27 ctermbg=15 cterm=NONE guifg=#0066ff guibg=#ffffff gui=NONE
 hi Normal ctermfg=0 ctermbg=15 cterm=NONE guifg=#000000 guibg=#ffffff gui=NONE
-hi Boolean ctermfg=63 ctermbg=NONE cterm=bold guifg=#2e49de guibg=NONE gui=bold
 hi Character ctermfg=160 ctermbg=NONE cterm=bold guifg=#cccccc guibg=NONE gui=bold
 hi Comment ctermfg=27 ctermbg=NONE cterm=NONE guifg=#2661f6
 hi Conditional ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
+
 hi Constant ctermfg=160 ctermbg=NONE cterm=bold guifg=#c5060b guibg=NONE gui=bold
 hi Define ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
 hi DiffAdd ctermfg=0 ctermbg=149 cterm=bold guifg=#000000 guibg=#a1e85d gui=bold
+
 hi DiffDelete ctermfg=203 ctermbg=NONE cterm=NONE guifg=#f25454 guibg=NONE gui=NONE
 hi DiffChange ctermfg=0 ctermbg=152 cterm=NONE guifg=#000000 guibg=#b9cfe7 gui=NONE
 hi DiffText ctermfg=0 ctermbg=74 cterm=bold guifg=#000000 guibg=#729fcf gui=bold
@@ -53,7 +57,7 @@ hi PreProc ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
 hi Special ctermfg=0 ctermbg=NONE cterm=NONE guifg=#000000 guibg=NONE gui=NONE
 hi SpecialKey ctermfg=250 ctermbg=254 cterm=NONE guifg=#bfbfbf guibg=#e6e6e6 gui=NONE
 hi Statement ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
-hi StorageClass ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
+hi StorageClass ctermfg=63 cterm=bold guifg=#2e49de guibg=#FAFAFA gui=bold
 hi String ctermfg=22 ctermbg=NONE cterm=NONE guifg=#036a07 guibg=NONE gui=NONE
 hi Tag ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
 hi Title ctermfg=0 ctermbg=NONE cterm=bold guifg=#000000 guibg=NONE gui=bold
@@ -106,5 +110,17 @@ hi cssClassName ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=N
 hi cssValueLength ctermfg=20 ctermbg=NONE cterm=NONE guifg=#0000cd guibg=NONE gui=NONE
 hi cssCommonAttr ctermfg=28 ctermbg=NONE cterm=bold guifg=#06960e guibg=NONE gui=bold
 hi cssBraces ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
-hi NonText guibg=#FFFFFF
 
+" to match the syntax/c.vim file keywords
+hi Include ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
+hi Repeat ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
+hi SpecialChar ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
+hi Structure ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
+hi Tag ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
+hi Typedef ctermfg=21 ctermbg=NONE cterm=bold guifg=#0000ff guibg=NONE gui=bold
+hi cOperator ctermfg=27 ctermbg=NONE cterm=NONE guifg=#2661f6
+hi cPreCondit ctermfg=27 ctermbg=NONE cterm=NONE guifg=#2661f6
+hi cBoolean ctermfg=63 cterm=bold guifg=#2e49de guibg=NONE gui=bold
+hi Boolean ctermfg=63 cterm=bold guifg=#2e49de guibg=NONE gui=bold
+
+hi NonText guibg=#FFFFFF

@@ -303,7 +303,7 @@ endif
 " note: this works on ENTIRE lines, not good for partial lines, see: https://stackoverflow.com/a/9449010/651174
 nnoremap    <leader>C   <nop>
 "vnoremap   <silent> <leader>C   :w! !pbcopy<CR><CR>
-vnoremap    <silent> <leader>C   :w! !it2copy<CR><CR>
+vnoremap    <silent> <leader>C   :w! !it2copy<CR><CR>'>0
 
 
 " Ctrl-opt-cmd-F to fold a python function
