@@ -298,13 +298,21 @@ endif
 
 " Mappings {{{1
 
-
 " Cmd-Shift-C to Copy (send to pbcopy) in visual mode
 " note: this works on ENTIRE lines, not good for partial lines, see: https://stackoverflow.com/a/9449010/651174
 nnoremap    <leader>C   <nop>
 "vnoremap   <silent> <leader>C   :w! !pbcopy<CR><CR>
 vnoremap    <silent> <leader>C   :w! !it2copy<CR><CR>'>0
 
+
+
+" Cmd-R to run a C program
+nnoremap <Leader>2R <C-w>wR<CR><C-w>w
+inoremap <Leader>2R <C-o><C-w>wR<CR><C-w>w
+
+" SHift-cmd-G to update git generically
+nnoremap <Leader>2G    :w!<CR>:silent !git commit -am 'updates' && git push origin master<CR>:redraw!<CR>
+inoremap <Leader>2G    <Esc>:w!<CR>:silent !git commit -am 'updates' && git push origin master<CR>:redraw!<CR>li
 
 " Ctrl-opt-cmd-F to fold a python function
 " note: this uses vim-pythonsense: 'af' for 'a function', 'ac' for class
