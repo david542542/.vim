@@ -159,7 +159,7 @@ Plug 'easymotion/vim-easymotion'
 " Vim-airline: status-bar for vim: https://github.com/vim-airline/vim-airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-fugitive'
 
 " Fuzzy-File Finder, cmd-G to easily open recent files: https://github.com/junegunn/fzf.vim
 Plug 'junegunn/fzf'
@@ -397,6 +397,9 @@ noremap! <leader>O <C-c>:e! <C-r>=getcwd()<CR>/
 nnoremap <expr> S   (getline('.') =~ '\S') ? 'S' : '"_ddko'
 
 
+" Shift-cmd-h to view :History of files
+nnoremap <leader>2H     :History<CR>
+inoremap <leader>2H     <C-o>:History<CR>
 
 " Cmd-h,l to move between vim tabs
 noremap  <leader>1H      gT
