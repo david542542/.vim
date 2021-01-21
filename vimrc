@@ -311,7 +311,7 @@ nnoremap <Leader>2R <C-w>wR<CR><C-w>w
 inoremap <Leader>2R <C-o><C-w>wR<CR><C-w>w
 
 " Shift-cmd-G to update git generically with all files
-" Good resource for getting the file: https://vim.fandom.com/wiki/Get_the_name_of_the_current_file
+"  Good resource for getting the file: https://vim.fandom.com/wiki/Get_the_name_of_the_current_file
 nnoremap <Leader>2G    :w!<CR>:silent !cd %:p:h && git add -A && commit -m 'updates' && git push origin master && cd -<CR>:redraw!<CR>
 inoremap <Leader>2G    <Esc>:w!<CR>:silent !cd %:p:h && git add -A && commit -am 'updates' && git push origin master && cd -<CR>:redraw!<CR>
 
