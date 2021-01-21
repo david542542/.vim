@@ -311,9 +311,10 @@ nnoremap <Leader>2R <C-w>wR<CR><C-w>w
 inoremap <Leader>2R <C-o><C-w>wR<CR><C-w>w
 
 " SHift-cmd-G to update git generically
-nnoremap <Leader>2G    :w!<CR>:silent !git commit -am 'updates' && git push origin master<CR>:redraw!<CR>
-inoremap <Leader>2G    <Esc>:w!<CR>:silent !git commit -am 'updates' && git push origin master<CR>:redraw!<CR>li
-
+nnoremap <Leader>2G    :w!<CR>:silent !cd %:p:h && git commit -am 'updates' && git push origin master && cd -<CR>:redraw!<CR>
+inoremap <Leader>2G    <Esc>:w!<CR>:silent !cd %:p:h && git commit -am 'updates' && git push origin master && cd -<CR>:redraw!<CR>
+" :!cd %:p:h && git add %:t && git commit -m 'message' && git push origin master && cd -
+" t add %:t && git commit -m 'message' && git push origin master && cd -
 " Ctrl-opt-cmd-F to fold a python function
 " note: this uses vim-pythonsense: 'af' for 'a function', 'ac' for class
 " ]m and [m to go to previous and next python function
