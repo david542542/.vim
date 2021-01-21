@@ -318,7 +318,7 @@ inoremap <Leader>2G    <Esc>:w!<CR>:silent !cd %:p:h && git add -A && commit -am
 " Shift-opt-cmd-G to push the current file to git with a custom message
 nnoremap <Leader>3G    :w!<CR>:!cd %:p:h && git add %:t && git commit -m '' && git push origin master && cd -<S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><Right>
 inoremap <Leader>3G    <Esc>:w!<CR>:!cd %:p:h && git add %:t && git commit -m '' && git push origin master && cd -<S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><Right>
-
+" test
 " Ctrl-opt-cmd-F to fold a python function
 " note: this uses vim-pythonsense: 'af' for 'a function', 'ac' for class
 " ]m and [m to go to previous and next python function
