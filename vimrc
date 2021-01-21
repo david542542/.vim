@@ -310,11 +310,15 @@ vnoremap    <silent> <leader>C   :w! !it2copy<CR><CR>'>0
 nnoremap <Leader>2R <C-w>wR<CR><C-w>w
 inoremap <Leader>2R <C-o><C-w>wR<CR><C-w>w
 
-" SHift-cmd-G to update git generically
-nnoremap <Leader>2G    :w!<CR>:silent !cd %:p:h && git commit -am 'updates' && git push origin master && cd -<CR>:redraw!<CR>
-inoremap <Leader>2G    <Esc>:w!<CR>:silent !cd %:p:h && git commit -am 'updates' && git push origin master && cd -<CR>:redraw!<CR>
-" :!cd %:p:h && git add %:t && git commit -m 'message' && git push origin master && cd -
-" t add %:t && git commit -m 'message' && git push origin master && cd -
+" Shift-cmd-G to update git generically with all files
+" Good resource for getting the file: https://vim.fandom.com/wiki/Get_the_name_of_the_current_file
+nnoremap <Leader>2G    :w!<CR>:silent !cd %:p:h && git add -A && commit -m 'updates' && git push origin master && cd -<CR>:redraw!<CR>
+inoremap <Leader>2G    <Esc>:w!<CR>:silent !cd %:p:h && git add -A && commit -am 'updates' && git push origin master && cd -<CR>:redraw!<CR>
+
+" Shift-opt-cmd-G to push the current file to git with a custom message
+nnoremap <Leader>3G    :w!<CR>:!cd %:p:h && git add %:t && git commit -m '' && git push origin master && cd -<S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><Right>
+inoremap <Leader>3G    <Esc>:w!<CR>!cd %:p:h && git add %:t && commit -m 'updates' && git push origin master && cd -<Home>
+
 " Ctrl-opt-cmd-F to fold a python function
 " note: this uses vim-pythonsense: 'af' for 'a function', 'ac' for class
 " ]m and [m to go to previous and next python function
