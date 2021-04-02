@@ -170,7 +170,7 @@ Plug 'easymotion/vim-easymotion'
 " Vim-airline: status-bar for vim: https://github.com/vim-airline/vim-airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-fugitive'
 
 " Fuzzy-File Finder, cmd-G to easily open recent files: https://github.com/junegunn/fzf.vim
 Plug 'junegunn/fzf'
@@ -314,6 +314,20 @@ nnoremap    <leader>C   <nop>
 vnoremap    <silent> <leader>C   :w! !it2copy<CR><CR>'>0
 
 
+
+" Cmd-R to run a C program
+nnoremap <Leader>2R <C-w>wR<CR><C-w>w
+inoremap <Leader>2R <C-o><C-w>wR<CR><C-w>w
+
+" Shift-cmd-G to update git generically with all files
+"  Good resource for getting the file: https://vim.fandom.com/wiki/Get_the_name_of_the_current_file
+nnoremap <Leader>2G    :w!<CR>:silent !cd %:p:h && git add -A && git commit -am 'updates' && git push origin master && cd -<CR>:redraw!<CR>
+inoremap <Leader>2G    <Esc>:w!<CR>:silent !cd %:p:h && git add -A && git commit -am 'updates' && git push origin master && cd -<CR>:redraw!<CR>
+
+" Shift-opt-cmd-G to push the current file to git with a custom message
+nnoremap <Leader>3G    :w!<CR>:!cd %:p:h && git add %:t && git commit -m '' && git push origin master<S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><Right>
+inoremap <Leader>3G    <Esc>:w!<CR>:!cd %:p:h && git add %:t && git commit -m '' && git push origin master<S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><Right>
+
 " Ctrl-opt-cmd-F to fold a python function
 " note: this uses vim-pythonsense: 'af' for 'a function', 'ac' for class
 " ]m and [m to go to previous and next python function
@@ -331,7 +345,7 @@ inoremap    <Leader>1d <C-o>dW
 " Up arrow to go to last command
 " nnoremap    <Up>    :<C-p>
 
-
+"
 
 " Matching HTML tags
 augroup MatchingTags
@@ -397,6 +411,9 @@ noremap! <leader>O <C-c>:e! <C-r>=getcwd()<CR>/
 nnoremap <expr> S   (getline('.') =~ '\S') ? 'S' : '"_ddko'
 
 
+" Shift-cmd-h to view :History of files
+nnoremap <leader>2H     :History<CR>
+inoremap <leader>2H     <C-o>:History<CR>
 
 " Cmd-h,l to move between vim tabs
 noremap  <leader>1H      gT
