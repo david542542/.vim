@@ -111,9 +111,10 @@ set belloff=all
 
 " The vimfile which gives us a few options on startup, for example to save markers or not, :h *'viminfo'*
 " Note the viminfo file is saved when you quit Vim and read when you re-open it
-" '100  --> Save markers from the last 100 files
+" '20  --> Save markers from the last 100 files
 " f1    --> Save file marks (such as A-Z, that can be accessed across files)
-set viminfo='100,f1,n~/.vim/viminfo
+" http://vimdoc.sourceforge.net/htmldoc/usr_21.html
+set viminfo='40,f1,<100,n~/.vim/viminfo
 " Will show what has been typed in before a command has finished, for example, 4d
 set showcmd
 
@@ -151,7 +152,17 @@ set undolevels=5000
 
 " }}}
 " Plugins {{{1
+" To update call :PlugInstall
 call plug#begin('~/.vim/plugged')
+
+" Ale: https://github.com/dense-analysis/ale/ -- gives some syntax/style hints
+" .pylintrc goes in the project directory (same level as virtualenv)
+Plug 'dense-analysis/ale'
+let b:ale_linters = ['pylint']
+
+" Jedi-vim: use *K* to get python library keyword definition: https://github.com/davidhalter/jedi-vim
+Plug 'davidhalter/jedi-vim'
+let g:jedi#completions_enabled = 0
 
 " Easy-motion: https://github.com/easymotion/vim-easymotion
 Plug 'easymotion/vim-easymotion'
@@ -185,10 +196,8 @@ Plug 'majutsushi/tagbar'
 " Python text objects: https://github.com/jeetsukumaran/vim-pythonsense
 Plug 'jeetsukumaran/vim-pythonsense'
 
-
 " Better matching parentheses and such: https://github.com/Raimondi/delimitMate 
 Plug 'Raimondi/delimitMate'
-
 
 " UtiliSnips to add code-snippets: https://github.com/SirVer/ultisnips
 " For whatever reason, not working/compiling with python version 3.4
@@ -297,7 +306,6 @@ if !snips_installed
 endif
 
 " Mappings {{{1
-
 
 " Cmd-Shift-C to Copy (send to pbcopy) in visual mode
 " note: this works on ENTIRE lines, not good for partial lines, see: https://stackoverflow.com/a/9449010/651174
